@@ -24,7 +24,7 @@ from lib.plugins.plugin_obj import PluginObj
 from .daddylive_instance import DaddyLiveInstance
 from ..lib import translations
 
-RESOURCE_PATH = 'plugins.provider_video_daddylive.resources'
+RESOURCE_PATH = 'plugins_ext.provider_video_daddylive.resources'
 
 
 class DaddyLive(PluginObj):
