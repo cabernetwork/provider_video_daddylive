@@ -1,0 +1,8 @@
+TODO.md
+*.pyc
+data/
+tmp/
+#IntelliJ
+.idea/
+cabernet.iml
+test*
