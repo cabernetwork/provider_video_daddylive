@@ -3,8 +3,14 @@
         "id": "provider_video_daddylive",
         "name": "DaddyLive",
         "version": {
-            "current_version": "0.1.0"
+            "current": "0.1.1"
         },
+        "requires": [{
+            "cabernet": {
+                "name": "cabernet",
+                "version": "0.9.11.01"
+            }
+        }],
         "provider-name": "rocky4546",
         "summary": "Watch TV channels from daddylivehd.sx website.",
         "description": "Watch Free TV! Stream daddylivehd.sx TV's channels of news, sports, and the Internet's best, completely free.",

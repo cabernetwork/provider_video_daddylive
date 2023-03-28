@@ -27,7 +27,7 @@ from lib.common.decorators import handle_json_except
 from lib.common.decorators import handle_url_except
 import lib.common.utils as utils
 from ..lib import daddylive
-
+from .. import resources
 
 class Channels(PluginChannels):
 
@@ -129,6 +129,7 @@ class Channels(PluginChannels):
             name = html.unescape(m[2])
             if name.lower().startswith('the '):
                 name = name[4:]
+            group = None
             ch = [d for d in tvg_list if d['name'] == name]
             if len(ch):
                 tvg_id = ch[0]['id']
@@ -140,11 +141,11 @@ class Channels(PluginChannels):
                     if ch_db_data is not None:
                         ch['enabled'] = ch_db_data[0]['enabled']
                         ch['id'] = ch_db_data[0]['uid']
-                        ch['name'] = ch_db_data[0]['display_name']
+                        ch['name'] = ch_db_data[0]['json']['name']
                         ch['HD'] = ch_db_data[0]['json']['HD']
-                        if ch_db_data[0]['thumbnail'] == ch['thumbnail']:
-                            thumb = ch_db_data[0]['thumbnail']
-                            thumb_size = ch_db_data[0]['thumbnail_size']
+                        if ch_db_data[0]['json']['thumbnail'] == ch['thumbnail']:
+                            thumb = ch_db_data[0]['json']['thumbnail']
+                            thumb_size = ch_db_data[0]['json']['thumbnail_size']
                         else:
                             thumb = ch['thumbnail']
                             thumb_size = self.get_thumbnail_size(thumb, uid)
@@ -169,7 +170,12 @@ class Channels(PluginChannels):
                         ch['Header'] = header
                         ch['ref_url'] = ref_url
                         ch['use_date_on_m3u8_key'] = False
-                        self.logger.debug('{} 1 Added Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                        self.logger.debug('{} New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
+
+                    group = [n.get('group') for n in tvg_list if n['name'] == ch['name']]
+                    if len(group):
+                        group = group[0]
+                    ch['groups_other'] = group
                     results.append(ch)
                     ch['found'] = True
                     continue
@@ -178,11 +184,12 @@ class Channels(PluginChannels):
             if ch_db_data is not None:
                 enabled = ch_db_data[0]['enabled']
                 hd = ch_db_data[0]['json']['HD']
-                thumb = ch_db_data[0]['thumbnail']
-                thumb_size = ch_db_data[0]['thumbnail_size']
-                ref_url = ch_db_data[0]['json'].get('ref_url')
+                thumb = ch_db_data[0]['json']['thumbnail']
+                thumb_size = ch_db_data[0]['json']['thumbnail_size']
+                ref_url = self.get_channel_ref(uid)
+                self.logger.debug('{} Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
             else:
-                self.logger.debug('{} 2 Added Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                self.logger.debug('{} New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
                 enabled = True
                 hd = 0
                 thumb = None
@@ -234,7 +241,7 @@ class Channels(PluginChannels):
         """
         if self.config_obj.data[self.plugin_obj.name.lower()]['epg-plugin'] == 'ALL':
             ch_list = json.loads(
-                importlib.resources.read_text(package=daddylive.RESOURCE_PATH, resource='channel_list.json'))
+                importlib.resources.read_text(resources, resource='channel_list.json'))
             ch_list = sorted(ch_list, key=lambda d: d['zone'])
             return ch_list
         else:
