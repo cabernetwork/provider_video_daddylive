@@ -16,7 +16,7 @@
                         "type": "boolean",
                         "default": false,
                         "level": 0,
-                        "help": "Will disable this instance only"
+                        "help": "Default: False. Will disable this instance only"
                     },
                     "label":{
                         "label": "Label",
@@ -31,21 +31,21 @@
                         "type": "integer",
                         "default": 23,
                         "level": 3,
-                        "help": "Channel list must be this old in hours for update to occur when requested"
+                        "help": "Default: 23. Channel list must be this old in hours for update to occur when requested"
                     },
                     "channel-import_groups":{
                         "label": "Import Channel Groups",
                         "type": "boolean",
                         "default": false,
                         "level": 1,
-                        "help": "Imports groups from DaddyLive into the group other column"
+                        "help": "Default: False. Imports groups from DaddyLive into the group other column"
                     },
                     "channel-group_name":{
                         "label": "Group Name",
                         "type": "string",
                         "default": null,
                         "level": 1,
-                        "help": "By default, the m3u file contains the plugin as a group.  This allows an instance name to be added to the group list during the m3u request. Use simple single words, if possible. If empty, will not add group."
+                        "help": "Default: None. By default, the m3u file contains the plugin as a group.  This allows an instance name to be added to the group list during the m3u request. Use simple single words, if possible. If empty, will not add group."
                     },
                     "channel-start_ch_num":{
                         "label": "Starting Ch Number",
@@ -53,7 +53,7 @@
                         "default": 1,
                         "level": 1,
                         "onChange": "lib.config.config_callbacks.update_channel_num",
-                        "help": "Overrides the channel number starting with the number provided and incrementing by one"
+                        "help": "Default: 1. Overrides the channel number starting with the number provided and incrementing by one"
                     },
                     "player-stream_type":{
                         "label": "stream_type",
@@ -61,49 +61,49 @@
                         "default": "internalproxy",
                         "values": ["internalproxy", "streamlinkproxy", "ffmpegproxy"],
                         "level": 1,
-                        "help": "M3U8 send m3u8 file directly to client.  ffmpeg uses ffmpeg for m3u8 urls. streamlink uses the python module streamlink. internal uses internally coded modules."
+                        "help": "Default: internalproxy. M3U8 send m3u8 file directly to client.  ffmpeg uses ffmpeg for m3u8 urls. streamlink uses the python module streamlink. internal uses internally coded modules."
                     },
                     "player-stream_quality":{
                         "label": "Maximum Stream Quality",
                         "type": "integer",
                         "default": 999999999,
                         "level": 3,
-                        "help": "Used with all stream types but m3u8redirect. Maximum bps bandwidth requested for a stream. If a lower bandwidth is available, it is used.  default (999999999) means select the best quality."
+                        "help": "Default: 999999999. Used with all stream types but m3u8redirect. Maximum bps bandwidth requested for a stream. If a lower bandwidth is available, it is used.  default (999999999) means select the best quality."
                     },
                     "player-play_all_segments":{
                         "label": "Play All (VOD)",
                         "type": "boolean",
                         "default": false,
                         "level": 3,
-                        "help": "Plays all starting segments and ignores Non-VOD Segments to Start setting. Helpful when the VOD is not set in the provider stream."
+                        "help": "Default: False. Plays all starting segments and ignores Non-VOD Segments to Start setting. Helpful when the VOD is not set in the provider stream."
                     },
                     "player-segments_to_play":{
                         "label": "Non-VOD Segments to Start",
                         "type": "integer",
                         "default": 8,
                         "level": 2,
-                        "help": "When starting, will play the last xxx segments. '1' means no buffering. Each increase means about 1-4 seconds of buffering. If the VOD flag is set in the stream, then setting is ignored."
+                        "help": "Default: 8. When starting, will play the last xxx segments. '1' means no buffering. Each increase means about 1-4 seconds of buffering. If the VOD flag is set in the stream, then setting is ignored."
                     },
                     "player-enable_url_filter":{
                         "label": "Enable URL Filtering",
                         "type": "boolean",
                         "default": false,
                         "level": 3,
-                        "help": "Only works with internalproxy. Filters out streams from URL addresses based on regular expression"
+                        "help": "Default: False. Only works with internalproxy. Filters out streams from URL addresses based on regular expression"
                     },
                     "player-url_filter":{
                         "label": "URL Filter",
                         "type": "string",
                         "default": null,
                         "level": 3,
-                        "help": "Only used with stream_type=internalproxy"
+                        "help": "Default: None. Only used with stream_type=internalproxy"
                     },
                     "player-enable_pts_filter":{
                         "label": "Enable PTS Filtering",
                         "type": "boolean",
                         "default": false,
                         "level": 3,
-                        "help": "Works with internalproxy and ffmpegproxy. Filters out corrupted PTS packets.  Requires ffprobe.exe"
+                        "help": "Default: False. Works with internalproxy and ffmpegproxy. Filters out corrupted PTS packets.  Requires ffprobe.exe"
                     },
                     "player-pts_minimum":{
                         "label": "pts_minimum",
@@ -124,7 +124,7 @@
                         "type": "boolean",
                         "default": false,
                         "level": 2,
-                        "help": "Works with internalproxy and ffmpegproxy. Corrects timing issues with the video and audio streams and makes them contiguous"
+                        "help": "Default: False. Works with internalproxy and ffmpegproxy. Corrects timing issues with the video and audio streams and makes them contiguous"
                     },
                     "player-pts_resync_type":{
                         "label": "PTS/DTS Resync Type",
@@ -132,28 +132,28 @@
                         "default": "ffmpeg",
                         "values": ["ffmpeg", "internal"],
                         "level": 2,
-                        "help": "Uses either ffmpeg genpts or internal resequencing"
+                        "help": "Default: ffmpeg. Uses either ffmpeg genpts or internal resequencing"
                     },
                     "epg-enabled":{
                         "label": "XMLTV Enabled",
                         "type": "boolean",
                         "default": true,
                         "level": 1,
-                        "help": "If disabled, will not ingest or populate the XMLTV output with this instance"
+                        "help": "Default: True. If disabled, will not ingest or populate the XMLTV output with this instance"
                     },
                     "epg-prefix":{
                         "label": "EPG Channel Prefix",
                         "type": "string",
                         "default": null,
                         "level": 1,
-                        "help": "If a number will ADD to the display channel number; otherwise, will prepend to the channel number as a string"
+                        "help": "Default: None. If a number will ADD to the display channel number; otherwise, will prepend to the channel number as a string"
                     },
                     "epg-suffix":{
                         "label": "EPG Channel Suffix",
                         "type": "string",
                         "default": null,
                         "level": 1,
-                        "help": "Will append to the channel number as a string"
+                        "help": "Default: None. Will append to the channel number as a string"
                     },
                     "epg-days":{
                         "label": "EPG days to load",
@@ -161,29 +161,29 @@
                         "default": "2",
                         "values": ["2", "6", "8", "10", "12", "14"],
                         "level": 1,
-                        "help": "Number of days to retrieve from today"
+                        "help": "Default: 2. Number of days to retrieve from today"
                     },
                     "epg-episode_adjustment":{
                         "label": "Adjusts Episode number",
                         "type": "list",
                         "default": 0,
-                        "values": [1000, 2000, 3000, 4000, 5000],
+                        "values": [0, 1000, 2000, 3000, 4000, 5000],
                         "level": 2,
-                        "help": "Used to record the same episode on two different channels at the same time.  EX: Record the same channel from antenna and DaddyLive at the same time."
+                        "help": "Default: 0. Used to record the same episode on two different channels at the same time.  EX: Record the same channel from antenna and DaddyLive at the same time."
                     },
                     "epg-start_adjustment":{
                         "label": "Start Time Adjustment",
                         "type": "integer",
                         "default": 0,
                         "level": 2,
-                        "help": "Used to start each program x seconds after the program is suppose to start."
+                        "help": "Default: 0. Used to start each program x seconds after the program is suppose to start."
                     },
                     "epg-end_adjustment":{
                         "label": "End Time Adjustment",
                         "type": "integer",
                         "default": 0,
                         "level": 2,
-                        "help": "Used to start each program x seconds before the program is suppose to end."
+                        "help": "Default: 0. Used to start each program x seconds before the program is suppose to end."
                     },
                     "epg-min_refresh_rate":{
                         "label": "EPG Min Refresh Rate",

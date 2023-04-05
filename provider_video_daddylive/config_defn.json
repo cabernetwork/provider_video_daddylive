@@ -16,7 +16,7 @@
                         "type": "boolean",
                         "default": true,
                         "level": 0,
-                        "help": "Will disable if an error occurs; otherwise set to disable to disable plugin"
+                        "help": "Default: True. Will disable if an error occurs; otherwise set to disable to disable plugin"
                     },
                     "plugin_image":{
                         "label": "Image",
@@ -38,14 +38,14 @@
                         "type": "integer",
                         "default": 10,
                         "level": 2,
-                        "help": "Number of streams active at one time"
+                        "help": "Default: 10. Number of streams active at one time"
                     },
                     "player-send_atsc_keepalive":{
                         "label": "Send ATSC Keep-Alive",
                         "type": "boolean",
                         "default": false,
                         "level": 2,
-                        "help": "For internalpproxy, when the provider stops sending packets or the stream is being filtered for 15 seconds, will send a ATSC keep-alive msg to client"
+                        "help": "Default: False. For internalpproxy, when the provider stops sending packets or the stream is being filtered for 15 seconds, will send a ATSC keep-alive msg to client"
                     },
                     "epg-plugin":{
                         "label": "EPG Plugin to Use",
@@ -54,7 +54,7 @@
                         "values": ["None", "ALL"],
                         "level": 1,
                         "onChange": ".provider_video_daddylive.lib.config_callbacks.license_confirmation",
-                        "help": "The EPG plugin to use to gather data for personal use"
+                        "help": "Default: None. The EPG plugin to use to gather data for personal use"
                     }
                 }
             }
