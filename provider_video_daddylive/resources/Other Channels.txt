@@ -192,3 +192,24 @@ Stream 296 - Hallmark Movies & Mysterie
 Stream 289 - Sport TV 4 Poutugal
 Stream 290 - Sport TV 5 Poutugal
 Stream 291 - Sport TV 6 Poutugal
+
+689 - Stream 689 - HBO2 USA
+690 - Stream 690 - HBO Comedy USA
+691 - Stream 691 - HBO Family USA
+692 - Stream 692 - HBO Latino USA
+693 - Stream 693 - HBO Signature USA
+694 - Stream 694 - HBO Zone USA
+695 - Stream 695 - HBO Signature USA
+
+667 - Stream 667 - Longhorn Network USA
+668 - Stream 668 - Universal Kids USA
+669 - Stream 669 - Crime + Investigation USA
+
+
+
+696 - Stream 696 - Comet USA
+697 - Stream 697 - Cooking Channel USA
+698 - Stream 698 - TMC Channel USA
+746 - Stream 746 - TYC Sports Argentina
+747 - Stream 747 - C More Football Sweden
+748 - Stream 748 - COZI TV USA

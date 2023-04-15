@@ -33,6 +33,15 @@
                         "writable": false,
                         "help": "Version of the plugin in the plugin.json file"
                     },
+                    "hdhr_id":{
+                        "label": "hdhr_id",
+                        "type": "string",
+                        "default": null,
+                        "level": 3,
+                        "writable": false,
+                        "onInit": "lib.config.config_callbacks.set_hdhomerun_id",
+                        "help": "Unique HDHomerun CRC-based hex code for this plugin"
+                    },
                     "player-tuner_count":{
                         "label": "tuner_count",
                         "type": "integer",

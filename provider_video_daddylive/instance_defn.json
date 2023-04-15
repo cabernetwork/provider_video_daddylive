@@ -50,10 +50,10 @@
                     "channel-start_ch_num":{
                         "label": "Starting Ch Number",
                         "type": "integer",
-                        "default": 1,
+                        "default": -1,
                         "level": 1,
                         "onChange": "lib.config.config_callbacks.update_channel_num",
-                        "help": "Default: 1. Overrides the channel number starting with the number provided and incrementing by one"
+                        "help": "Default: -1. -1 means not enabled. Overrides the channel number starting with the number provided and incrementing by one"
                     },
                     "player-stream_type":{
                         "label": "stream_type",
@@ -85,7 +85,7 @@
                         "help": "Default: 8. When starting, will play the last xxx segments. '1' means no buffering. Each increase means about 1-4 seconds of buffering. If the VOD flag is set in the stream, then setting is ignored."
                     },
                     "player-enable_url_filter":{
-                        "label": "Enable URL Filtering",
+                        "label": "URL Filtering",
                         "type": "boolean",
                         "default": false,
                         "level": 3,
@@ -99,7 +99,7 @@
                         "help": "Default: None. Only used with stream_type=internalproxy"
                     },
                     "player-enable_pts_filter":{
-                        "label": "Enable PTS Filtering",
+                        "label": "PTS Filtering",
                         "type": "boolean",
                         "default": false,
                         "level": 3,
@@ -120,7 +120,7 @@
                         "help": "Default 3,000,000 or 32 seconds. when playing contiguous blocks of video, filters out any blocks that do not have a continuous PTS counter."
                     },
                     "player-enable_pts_resync":{
-                        "label": "Enable PTS/DTS Resync",
+                        "label": "PTS/DTS Resync",
                         "type": "boolean",
                         "default": false,
                         "level": 2,
