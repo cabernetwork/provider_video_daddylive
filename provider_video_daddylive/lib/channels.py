@@ -49,7 +49,7 @@ class Channels(PluginChannels):
             return
         self.logger.info("{}: Found {} stations on instance {}"
                          .format(self.plugin_obj.name, len(ch_list), self.instance_key))
-        ch_list = sorted(ch_list, key=lambda d: d['name'])
+        ch_list = sorted(ch_list, key=lambda d: d['name'].casefold())
         ch_num = 1
         for ch in ch_list:
             ch['number'] = ch_num
