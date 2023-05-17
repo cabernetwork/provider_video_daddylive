@@ -64,10 +64,14 @@ class Channels(PluginChannels):
         """
         text = self.get_uri_data(self.plugin_obj.unc_daddylive_base +
                                  self.plugin_obj.unc_daddylive_stream.format(_channel_id))
+        if not text:
+            self.logger.info('{}: {} 1 Unable to obtain url, aborting'
+                             .format(self.plugin_obj.name, _channel_id))
+            return
         m = re.search(self.search_url, text)
         if not m:
             # unable to obtain the url, abort
-            self.logger.info('{}: {} Unable to obtain url, aborting'
+            self.logger.info('{}: {} 2 Unable to obtain url, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
         return m[1].decode('utf8')
