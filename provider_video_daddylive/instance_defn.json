@@ -98,6 +98,13 @@
                         "level": 3,
                         "help": "Default: None. Only used with stream_type=internalproxy"
                     },
+                    "player-enable_full_duplicate_checking":{
+                        "label": "Full Duplicate Filtering",
+                        "type": "boolean",
+                        "default": true,
+                        "level": 3,
+                        "help": "Default: True. Only works with internalproxy. If disabled will use the url without the query_string to determine if a stream packet is duplicate. Set to false when the url contains dynamic authentication data that changes."
+                    },
                     "player-enable_pts_filter":{
                         "label": "PTS Filtering",
                         "type": "boolean",

@@ -20,7 +20,8 @@ Stream 661 - MotorTrend
 Stream 662 - METV USA
 Stream 663 - NHL Network
 Stream 664 - ACC Network
-Stream 665 - FYI
+Stream 665 - FYI USA
+Stream 666 - Nick Music
 Stream 741 - Ten Sports PK
 Stream 742 - AXS TV USA
 Stream 743 - Galavisión USA
@@ -33,9 +34,11 @@ Stream 210 - PBS USA
 Stream 211 - Antenna TV USA
 Stream 208 - TeleTOON CA
 Stream 292 - NewsNation USA
+Stream 285 - Discovery Velocity CA
 Stream 286 - YTV CA
 Stream 287 - Pac-12 Network
 Stream 212 - Treehouse TV CA
+Stream 608 - Newsmax USA
 Stream 600 - Abu Dhabi Sports 1 UAE
 Stream 601 - Abu Dhabi Sports 2 UAE
 Stream 602 - CTV Canada
@@ -44,7 +47,6 @@ Stream 604 - Dubai Sports UAE
 Stream 605 - Dubai Sports 2 UAE
 Stream 606 - Dubai Sports 3 UAE
 Stream 607 - Dubai Racing UAE
-Stream 608 - Dubai Racing 2 UAE
 Stream 609 - Yas TV UAE
 Stream 610 - Deutsche Welle Arabic
 Stream 611 - OnTime Sports
@@ -131,7 +133,7 @@ Stream 742 - AXS TV USA
 Stream 743 - Galavisión USA
 Stream 744 - Fashion TV
 Stream 745 - Nat Geo Wild USA
-Stream 756 - Yes Network
+Stream 756 - FOX Soccer Plus
 Stream 757 - Fight Network
 Stream 758 - Fox Sports 2 USA
 Stream 759 - SportsNet New York USA (SNY)
@@ -180,7 +182,6 @@ Stream 814 - C More Series
 Stream 815 - V Film Premiere
 Stream 816 - V Film Family
 
-
 Stream 373 - SYFY USA
 Stream 374 - Cinemax USA
 Stream 298 - FXX USA
@@ -192,8 +193,6 @@ Stream 296 - Hallmark Movies & Mysterie
 Stream 289 - Sport TV 4 Poutugal
 Stream 290 - Sport TV 5 Poutugal
 Stream 291 - Sport TV 6 Poutugal
-
-
 
 667 - Stream 667 - Longhorn Network USA
 668 - Stream 668 - Universal Kids USA
@@ -228,6 +227,11 @@ Stream 291 - Sport TV 6 Poutugal
 778 - Stream 778 - NBC Sports Washington
 779 - Stream 779 - Max Sport 1 HD HR
 780 - Stream 780 - Max Sport 2 HD HR
+781 - Stream 781 - Alkass One
+782 - Stream 782 - Alkass Two
+783 - Stream 783 - Alkass Three
+784 - Stream 784 - Alkass Four
+785 - Stream 785 - ABS-CBN
 
 Stream 831 - Citytv
 Stream 832 - CBC CA
