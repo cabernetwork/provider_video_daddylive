@@ -1,34 +1,116 @@
-Stream 643 -  FOX Deportes USA
-Stream 644 -  TCM USA
-Stream 645 -  L'Équipe France
-Stream 646 -  MAV TV
-Stream 647 -  CMT USA
-Stream 648 - Boomerang
-Stream 649 - Nicktoons
-Stream 650 - TeenNick
-Stream 651 - Destination America
-Stream 652 - Disney JR
-Stream 653 - POP TV USA 
-Stream 654 - MY9TV USA
-Stream 655 - WETV USA
-Stream 656 - IFC TV USA
-Stream 657 - Discovery Family USA
-Stream 658 - Sundance TV
-Stream 659 - VICE TV
-Stream 660 - TV ONE USA
-Stream 661 - MotorTrend
-Stream 662 - METV USA
-Stream 663 - NHL Network
-Stream 664 - ACC Network
-Stream 665 - FYI USA
-Stream 666 - Nick Music
-Stream 741 - Ten Sports PK
-Stream 742 - AXS TV USA
-Stream 743 - Galavisión USA
-Stream 744 - Fashion TV
+31 - Stream 31      -      BT Sport 1
+32 - Stream 32      -      BT Sport 2
+33 - Stream 33      -      BT Sport 3
+34 - Stream 34      -      BT Sport 4
+35 - Stream 35      -      Sky Sports Football
+36 - Stream 36      -      Sky Sports Arena
+37 - Stream 37      -      Sky Sports Action
+38 - Stream 38      -      Sky Sports Main Event
+39 - Stream 39      -      Fox Sports 1 USA
+40 - Stream 40      -      Tennis Channel
+41 - Stream 41      -      Euro Sport 1 UK
+42 - Stream 42      -      Euro Sport 2 UK
+43 - Stream 43      -      Astro SuperSport 5
+44 - Stream 44      -      ESPN USA
+45 - Stream 45      -      ESPN2 USA
+46 - Stream 46      -      beIN SPORTS 3 English
+47 - Stream 47      -      Polsat Sport Poland
+48 - Stream 48      -      Canal+ Sport Poland
+49 - Stream 49      -      Sport TV1 Portugal
+50 - Stream 50      -      Polsat Sport Extra Poland
+51 - Stream 51     -     ABC USA
+52 - Stream 52     -     CBS USA
+53 - Stream 53     -     NBC USA
+54 - Stream 54     -     FOX USA
+56 - Stream 56     -     Supersport Football
+57 - Stream 57     -     Euro Sport 1 Poland 
+58 - Stream 58     -     Euro Sport 2 Poland
+60 - Stream 60     -     Sky Sports F1 UK
+61 - Stream 61     -      beIN SPORTS 1 English
+62 - Stream 62     -      beIN SPORTS 1 Turkey
+63 - Stream 63     -      beIN SPORTS 2 Turkey
+64 - Stream 64     -      beIN SPORTS 3 Turkey
+65 - Stream 65     -      Sky Sports Cricket
+66 - Stream 66      -      TUDN USA
+67 - Stream 67     -      beIN SPORTS 4 Turkey
+70 - Stream 70     -      Sky Sports Golf
+71 - Stream 71      -      Eleven Sports 1 Poland
+72 - Stream 72     -      Eleven Sports 2 Poland
+73 - Stream 73     -      Canal+ Sport 2 Poland
+74 - Stream 74      -      Sport TV 2 Portugal
+75 - Stream 75      -      CANAL+ SPORT 5 Poland
+76 - Stream 76      -      (Empty)
+77 - Stream 77      -      (Empty)
+78 - Stream 78      -      SporTV Brasil
+79 - Stream 79      -      SporTV2 Brasil
+80 - Stream 80      -      SporTV3 Brasil
+81 - Stream 81      -      ESPN Brasil
+82 - Stream 82      -      ESPN2 Brasil
+83 - Stream 83      -      ESPN3 Brasil
+84 - Stream 84      -      Movistar Laliga
+85 - Stream 85      -      ESPN4 Brasil
+86 - Stream 86      -      (Empty)
+87 - Stream 87      -      TNT Brasil
+88 - Stream 88      -      Premier 1 Brasil 
+89 - Stream 89      -      Combate Brasil
+90 - Stream 90      -      beIN SPORTS 2 English
+91 - Stream 91      -      beIN SPORTS 1 Arabic
+92 - Stream 92      -      beIN SPORTS 2 Arabic
+93 - Stream 93      -      beIN SPORTS 3 Arabic
+94 - Stream 94      -      beIN SPORTS 4 Arabic
+95 - Stream 95      -      beIN SPORTS 5 Arabic
+96 - Stream 96      -      beIN SPORTS 6 Arabic
+97 - Stream 97      -      beIN SPORTS 7 Arabic
+98 - Stream 98      -      beIN SPORTS 1 PREMIUM
+99 - Stream 99      -      beIN SPORTS 2 PREMIUM
+100 - Stream 100    -      beIN SPORTS 3 PREMIUM
+101 - Stream 101   -   Sport Klub 1 Serbia
+102 - Stream 102   -    Sport Klub 2 Serbia
+103 - Stream 103  -   Sport Klub 3 Serbia
+104 - Stream 104   -  Sport Klub 4 Serbia
+111 - Stream 111    -    TSN1
+112 - Stream 112    -      TSN2
+113 - Stream 113    -      TSN3
+114 - Stream 114    -      TSN4
+115 - Stream 115    -      TSN5
+116 - Stream 116    -      beIN SPORTS 1 France
+117 - Stream 117    -      beIN SPORTS 2 France
+118 - Stream 118    -      beIN SPORTS 3 France
+119 - Stream 119    -      RMC Sport 1 France
+120 - Stream 120    -      RMC Sport 2 France
+121 - Stream 121    -      Canal+ France
+122 - Stream 122    -      Canal+ Sport France
+123 - Stream 123    -      Astro SuperSport 1
+124 - Stream 124    -      Astro SuperSport 2
+125 - Stream 125    -      Astro SuperSport 3
+126 - Stream 126    -      Astro SuperSport 4 
+127 - Stream 127    -      Match TV Russia
+128 - Stream 128    -      TVP Sport Poland
+129 - Stream 129    -      Polsat Sport News Poland
+130 - Stream 130   -       Sky sports Premier League
+131 - Stream 131   -       Telemundo
+132 - Stream 132   -       Univision
+133 - Stream 133   -       Unimas
+134 - Stream 134   -       Arena Sport 1 Premium
+135 - Stream 135   -       Arena Sport 2 Premium
+136 - Stream 136   -       Match Football 1 Russia
+137 - Stream 137   -       Match Football 2 Russia
+138 - Stream 138   -       Match Football 3 Russia
+139 - Stream 139   -       Arena Sport 3 Premium
+140 - Stream 140   -       Sport 1 Israel
+141 - Stream 141   -       Sport 2 Israel
+142 - Stream 142   -       Sport 3 Israel 
+143 - Stream 143   -       Sport 4 Israel
+144 - Stream 144   -       Sport 5 Israel
+145 - Stream 145   -       Sport 5 PLUS Israel
+146 - Stream 146   -       Sport 5 Live Israel
+147 - Stream 147   -       Sport 5 Star Israel
+148 - Stream 148   -       Sport 5 Gold Israel
+149 - Stream 149   -       ESPN SUR
+150 - Stream 150   -       ESPN2 SUR
 Stream 206 - AHC USA
-Stream 318 - TBN USA
-Stream 602 - Nat Geo Wild
+Stream 218 - TBN USA
+Stream 602 - CTV CA
 Stream 603 - Smithsonian Channel
 Stream 210 - PBS USA
 Stream 211 - Antenna TV USA
@@ -38,213 +120,582 @@ Stream 285 - Discovery Velocity CA
 Stream 286 - YTV CA
 Stream 287 - Pac-12 Network
 Stream 212 - Treehouse TV CA
-Stream 608 - Newsmax USA
-Stream 600 - Abu Dhabi Sports 1 UAE
-Stream 601 - Abu Dhabi Sports 2 UAE
-Stream 602 - CTV Canada
-Stream 603 - Smithsonian Channel USA
-Stream 604 - Dubai Sports UAE
-Stream 605 - Dubai Sports 2 UAE
-Stream 606 - Dubai Sports 3 UAE
-Stream 607 - Dubai Racing UAE
-Stream 609 - Yas TV UAE
-Stream 610 - Deutsche Welle Arabic
-Stream 611 - OnTime Sports
-Stream 612 - OnTime Sports 2
-Stream 613 - OnTime Sports 3
-Stream 614 - SSC Sport 1
-Stream 615 - SSC Sport 2
-Stream 616 - SSC Sport 3
-Stream 617 - SSC Sport 4
-Stream 618 - SSC Sport 5
-Stream 619 - SSC Sport Extra 1
-Stream 620 - SSC Sport Extra 2
-Stream 621 - SSC Sport Extra 3
-Stream 622 - Cosmote Sport 1 HD
-Stream 623 - Cosmote Sport 2 HD
-Stream 624 - Cosmote Sport 3 HD
-Stream 625 - Cosmote Sport 4 HD
-Stream 626 - Cosmote Sport 5 HD
-Stream 627 - Cosmote Sport 6 HD
-Stream 628 - Cosmote Sport 7 HD
-Stream 629 - Cosmote Sport 8 HD
-Stream 630 - Cosmote Sport 9 HD
-Stream 631 -  Nova Sports 1 GR
-Stream 632 -  Nova Sports 2 GR
-Stream 633 -  Nova Sports 3 GR
-Stream 634 -  Nova Sports 4 GR
-Stream 635 -  Nova Sports 5 GR
-Stream 636 -  Nova Sports 6 GR
-Stream 637 -  Nova Sports Start GR
-Stream 638 -  Nova Sports Prime GR
-Stream 639 -  Nova Sports News GR
-Stream 640 -  Sport1+ Germany
-Stream 641 -  Sport1 Germany
-Stream 642 -  TNT Sports HD Chile 
-Stream 670 - S4C UK
-Stream 671 - Sky Cinema Premiere UK
-Stream 672 - Sky Cinema Select UK
-Stream 673 - Sky Cinema Hits UK
-Stream 674 - Sky Cinema Greats UK
-Stream 675 - Sky Cinema Animation UK
-Stream 676 - Sky Cinema Family UK
-Stream 677 - Sky Cinema Action UK
-Stream 678 - Sky Cinema Comedy UK
-Stream 679 - Sky Cinema Thriller UK
-Stream 680 - Sky Cinema Drama UK
-Stream 681 - Sky Cinema Sci-Fi Horror
-Stream 682 - Sky Showcase
-Stream 683 - Sky Arts UK
-Stream 684 - Sky Comedy UK
-Stream 685 - Sky Crime
-Stream 686 - Sky History
-Stream 687 - Gold UK
-Stream 688 - Film4 UK
-
-Stream 716 - Sporting TV Portugal
-Stream 717 - AXN Movies Portugal
-Stream 718 - Porto Canal Portugal
-Stream 719 - RTP 1 Portugal
-Stream 720 - RTP 2 Portugal
-Stream 721 - RTP 3 Portugal
-Stream 722 - SIC Portugal
-Stream 723 - TVI Portugal
-Stream 724 - TVI Reality Portugal
-
-Stream 725 - Arte DE
-Stream 726 - 3sat DE
-Stream 727 - ZDF DE
-Stream 728 - ZDF Info DE
-Stream 729 - SAT.1 DE
-Stream 730 - ProSieben (PRO7) DE
-Stream 731 - Kabel Eins (Kabel 1) DE
-Stream 732 - Sixx DE
-Stream 733 - MDR DE
-Stream 734 - WDR DE
-Stream 735 - SWR DE
-Stream 736 - NDR DE
-Stream 737 - BR Fernsehen DE
-Stream 738 - SUPER RTL DE
-Stream 739 - SR Fernsehen DE
-Stream 740 - HR Fernsehen DE
-
-Stream 741 - Ten Sports PK
-Stream 742 - AXS TV USA
-Stream 743 - Galavisión USA
-Stream 744 - Fashion TV
-Stream 745 - Nat Geo Wild USA
-Stream 756 - FOX Soccer Plus
-Stream 757 - Fight Network
-Stream 758 - Fox Sports 2 USA
-Stream 759 - SportsNet New York USA (SNY)
-Stream 760 - Globo SP
-Stream 761 - Globo RIO
-Stream 762 - NESN USA (New England Sports Network)
-Stream 763 - YES Network USA
-Stream 764 - Spectrum Sportsnet LA
-Stream 765 - MSG USA (MSG Network)
-Stream 766 - ABCNY USA
-Stream 767 - CBSNY USA
-Stream 768 - FOXNY USA
-Stream 769 - NBCNY USA
-Stream 770 - Marquee Sports Network
-Stream 775 - Fox Weather Channel
-Stream 826 - Liverpool TV (LFC TV)
-Stream 827 - DSTV M-Net
-Stream 828 - DSTV kykNET & kie
-Stream 829 - MASN USA
-Stream 830 - Fox Sports Premium MX
-Stream 369 - FOX Sports 501 AU
-Stream 820 - FOX Sports 502 AU
-Stream 821 - FOX Sports 503 AU
-Stream 822 - FOX Sports 504 AU
-Stream 823 - FOX Sports 505 AU
-Stream 824 - FOX Sports 506 AU
-Stream 825 - FOX Sports 507 AU
-
-Stream 221 - TV2 DK
-Stream 223 - TV 2 Zulu
-Stream 800 - 6'eren DK
-Stream 801 - DR1 DK
-Stream 802 - DR2 DK
-Stream 803 - Kanal 4 DK
-Stream 804 - Kanal 5 DK
-Stream 805 - CANAL9 DK
-Stream 806 - MTV DK
-Stream 807 - TV 2/Bornholm DK
-Stream 808 - TV 2 Sport X DK
-Stream 809 - TV3 Sport DK
-Stream 810 - TV 2 Sport DK
-Stream 811 - C More Stars
-Stream 812 - C More First
-Stream 813 - C More Hits
-Stream 814 - C More Series
-Stream 815 - V Film Premiere
-Stream 816 - V Film Family
-
-Stream 373 - SYFY USA
-Stream 374 - Cinemax USA
-Stream 298 - FXX USA
-Stream 299 - Magnolia Network
-Stream 293 - Reelz Channel
-Stream 294 - Science Channel
-Stream 295 - Adult Swim
-Stream 296 - Hallmark Movies & Mysterie
-Stream 289 - Sport TV 4 Poutugal
-Stream 290 - Sport TV 5 Poutugal
-Stream 291 - Sport TV 6 Poutugal
-
-667 - Stream 667 - Longhorn Network USA
-668 - Stream 668 - Universal Kids USA
-669 - Stream 669 - Crime + Investigation USA
-689 - Stream 689 - HBO2 USA
-690 - Stream 690 - HBO Comedy USA
-691 - Stream 691 - HBO Family USA
-692 - Stream 692 - HBO Latino USA
-693 - Stream 693 - HBO Signature USA
-694 - Stream 694 - HBO Zone USA
-695 - Stream 695 - HBO Signature USA
-696 - Stream 696 - Comet USA
-697 - Stream 697 - Cooking Channel USA
-698 - Stream 698 - TMC Channel USA
-699 - Stream 699 - Great American Family Channel (GAC)
-715 - Stream 715 - Cleo TV
-
-
-746 - Stream 746 - TYC Sports Argentina
-747 - Stream 747 - C More Football Sweden
-748 - Stream 748 - COZI TV USA
-
-
-750 - Stream 750 - C SPAN 1
-751 - Stream 751 - FETV - Family Entertainment Television
-752 - Stream 752 - Grit Channel
-753 - Stream 753 - NBC Sports Bay Area
-754 - Stream 754 - NBC Sports Boston
-755 - Stream 755 - NBC Sports California
-776 - Stream 776 - NBC Sports Chicago
-777 - Stream 777 - NBC Sports Philadelphia
-778 - Stream 778 - NBC Sports Washington
-779 - Stream 779 - Max Sport 1 HD HR
-780 - Stream 780 - Max Sport 2 HD HR
-781 - Stream 781 - Alkass One
-782 - Stream 782 - Alkass Two
-783 - Stream 783 - Alkass Three
-784 - Stream 784 - Alkass Four
-785 - Stream 785 - ABS-CBN
-
-Stream 831 - Citytv
-Stream 832 - CBC CA
-Stream 833 - TVA Sports
-Stream 834 - TVA Sports 2
-Stream 835 - Noovo CA
-Stream 836 - Global CA
-Stream 837 - Yes TV CA
-Stream 838 - CTV 2 CA
-Stream 839 - RDS CA
-Stream 840 - RDS 2 CA
-Stream 841 - RDS Info CA
-Stream 842 - TVO CA
-
-
-
+Stream 613 - Newsmax USA  **
+Stream 284 - StarzPlay CricLife 1 HD
+Stream 283 - StarzPlay CricLife 2 HD
+Stream 282 - StarzPlay CricLife 3 HD
+Stream 281 - Court TV USA
+289 - Stream 289   -    Sport TV 4 Poutugal
+290 - Stream 290   -   Sport TV 5 Poutugal
+291 - Stream 291   -  Sport TV 6 Poutugal
+292 - Stream 292   -   NewsNation USA
+293 - Stream 293   -   Reelz Channel
+294 - Stream 294   -   Science Channel
+295 - Stream 295   -  Adult Swim
+296 - Stream 296   -   Hallmark Movies & Mysterie
+297 - Stream 297   -   Fox Business
+298 - Stream 298   -   FXX USA
+299 - Stream 299   -   Magnolia Network (OLD name : DIY )
+300 - Stream 300   -   CW USA
+301 - Stream 301   -   Freeform
+302 - Stream 302   -   A&E
+303 - Stream 303   -   AMC USA
+304 - Stream 304   -   Animal Planet (APL)
+305 - Stream 305   -   BBC America (BBCA)
+306 - Stream 306   -   BET USA
+307 - Stream 307   -   Bravo TV
+308 - Stream 308   -   CBS Sports Network (CBSSN)
+309 - Stream 309   -    CNBC USA
+310 - Stream 310   -   Comedy Central (CC)
+311 - Stream 311   -   Discovery Life Channel
+312 - Stream 312   -  Disney Channel
+313 - Stream 313   -   Discovery HD
+314 - Stream 314   -   Disney XD
+315 - Stream 315   -   E! Entertainment Television
+316 - Stream 316   -   ESPNU USA
+317 - Stream 317   -   FX TV (Fox)
+318 - Stream 318   -   GOLF Channel USA
+319 - Stream 319   -    Game Show Network (GSN)
+320 - Stream 320   -   The Hallmark Channel (HALL)
+321 - Stream 321   -    HBO USA
+322 - Stream 322   -   History TV
+323 - Stream 323   -    Headline News (HLN)
+324 - Stream 324   -    Investigation Discovery (ID)
+325 - Stream 325   -   ION Television (ION)
+326 - Stream 326   -   Lifetime Network
+327 - Stream 327   -   MSNBC
+328 - Stream 328   -   National Geographic (NGC)
+329 - Stream 329   -    NICKJR
+330 - Stream 330   -    NICK
+331 - Stream 331   -    Oprah Winfrey Network (OWN)
+332 - Stream 332   -    Oxygen True Crime
+333 - Stream 333   -    Showtime USA
+334 - Stream 334   -    Paramount NETWORK
+335 - Stream 335   -    Starz
+336 - Stream 336   -    TBS USA
+337 - Stream 337   -    TLC
+338 - Stream 338   -    TNT USA
+339 - Stream 339   -    Cartoon Network (CN)
+340 - Stream 340   -    Travel Channel
+341 - Stream 341   -     truTV
+342 - Stream 342   -    TVLAND
+343 - Stream 343   -    USA Network
+344 - Stream 344   -    VH1 USA
+345 - Stream 345   -    CNN USA
+346 - Stream 346   -  Willow Cricket
+347 - Stream 347   -    Fox News
+348 - Stream 348   -    Dave
+349 - Stream 349   -    BBC News Channel HD
+350 - Stream 350   -     ITV 1 UK
+351 - Stream 351   -       ITV 2 UK
+352 - Stream 352   -       ITV 3 UK
+353 - Stream 353   -       ITV 4 UK
+354 - Stream 354   -       Channel 4 UK
+355 - Stream 355   -       Channel 5 UK
+356 - Stream 356   -       BBC One UK
+357 - Stream 357   -       BBC Two UK
+358 - Stream 358   -       BBC Three UK
+359 - Stream 359   -       BBC Four UK
+360 - Stream 360   -       5 USA
+361 - Stream 361   -       Sky Witness HD
+362 - Stream 362   -       Sky Atlantic
+363 - Stream 363   -       E4 Channel
+364 - Stream 364   -       RTE 1
+365 - Stream 365   -       RTE 2
+366 - Stream 366   -       Sky Sports News UK
+367 - Stream 367   -       MTV UK
+368 - Stream 368   -       SuperSport Cricket
+369 - Stream 369   -       Fox Cricket
+370 - Stream 370   -       Astro Cricket
+371 - Stream 371   -       MTV USA
+372 - Stream 372   -       beIN SPORTS en Español
+373 - Stream 373   -       SYFY USA
+374 - Stream 374   -       Cinemax USA
+375 - Stream 375   -       ESPN Deportes
+376 - Stream 376   -       WWE Network
+377 - Stream 377   -       MUTV UK
+378 - Stream 378   -       Veronica NL Netherland
+379 - Stream 379   -       ESPN 1 NL
+380 - Stream 380   -       Benfica TV PT
+381 - Stream 381   -       FX Movie Channel (FXM)
+382 - Stream 382   -       HGTV
+383 - Stream 383   -       Ziggo Sport Docu NL
+384 - Stream 384   -       The Food Network (FOOD)
+385 - Stream 385   -       SEC Network USA
+386 - Stream 386   -       ESPN 2 NL
+387 - Stream 387   -       ESPN Premium Argentina
+388 - Stream 388   -       TNT Sports Argentina
+389 - Stream 389   -       Lifetime Movies Network (LMN)
+390 - Stream 390   -       RTL7 Netherland
+391 - Stream 391   -       VTV+ Uruguay
+392 - Stream 392   -       Win Sports+ Columbia
+393 - Stream 393   -       Ziggo Sport Select NL
+394 - Stream 394   -       The Weather Channel
+395 - Stream 395   -       МАТЧ! БОЕЦ Russia
+396 - Stream 396   -       Ziggo Sport Racing NL
+397 - Stream 397   -       BIG TEN Network (BTN USA)
+398 - Stream 398   -       Ziggo Sport Voetbal NL
+399 - Stream 399   -       MLB Network
+400 - Stream 400   -       Digi Sport 1 Romania
+401 - Stream 401   -       Digi Sport 2 Romania
+402 - Stream 402   -       Digi Sport 3 Romania
+403 - Stream 403   -       Digi Sport 4 Romania
+404 - Stream 404   -       NBA TV USA
+405 - Stream 405   -       NFL Network
+406 - Stream 406   -       Sportsnet Ontario
+407 - Stream 407   -       Sportsnet West
+408 - Stream 408   -       Sportsnet East
+409 - Stream 409   -       Sportsnet 360
+410 - Stream 410   -       Sportsnet World
+411 - Stream 411   -       Sportsnet one
+412 - Stream 412   -       SuperSport Grandstand
+413 - Stream 413   -       SuperSport PSL
+414 - Stream 414   -       SuperSport Premier league
+415 - Stream 415   -       SuperSport LaLiga
+416 - Stream 416   -       SuperSport Variety 1
+417 - Stream 417   -       SuperSport Variety 2
+418 - Stream 418   -       SuperSport Variety 3
+419 - Stream 419   -       SuperSport Variety 4 
+420 - Stream 420   -       SuperSport Action
+421 - Stream 421   -       SuperSport Rugby
+422 - Stream 422   -       SuperSport Golf
+423 - Stream 423   -       SuperSport Tennis
+424 - Stream 424   -       SuperSport Motorsport
+425 - Stream 425   -       BeIN SPORTS USA
+426 - Stream 426   -       DAZN 1 Bar DE
+427 - Stream 427   -       DAZN 2 Bar DE
+428 - Stream 428   -       Eleven Sports 3 Poland
+429 - Stream 429   -       Arena Sport 1 Serbia
+430 - Stream 430   -       Arena Sport 2 Serbia
+431 - Stream 431   -       Arena Sport 3 Serbia
+432 - Stream 432   -       Arena Sport 1 Croatia 
+433 - Stream 433   -       Arena Sport 2 Croatia
+434 - Stream 434   -       Arena Sport 3 Croatia
+435 - Stream 435   -       Movistar Liga de Campeones
+436 - Stream 436   -       Movistar Deportes Spain
+437 - Stream 437   -       #0 Spain
+438 - Stream 438   -       Movistar Deportes 2 Spain
+439 - Stream 439   -       Orange Sport 1 Romania
+440 - Stream 440   -       Orange Sport 2 Romania
+441 - Stream 441   -       Orange Sport 3 Romania
+442 - Stream 442   -       Orange Sport 4 Romania
+443 - Stream 443   -       Polsat News Poland
+444 - Stream 444   -       TVN24 Poland
+445 - Stream 445   -       DAZN 1 Spain
+446 - Stream 446   -       DAZN 2 Spain
+447 - Stream 447   -       DAZN 3 Spain
+448 - Stream 448   -       DAZN 4 Spain
+449 - Stream 449   -       Sky Sports MIX UK
+450 - Stream 450   -       PTV Sports
+451 - Stream 451   -       Viaplay Sports 1 UK
+452 - Stream 452   -       TVP INFO
+453 - Stream 453   -       Sport Klub HD Serbia
+454 - Stream 454   -       Sport TV3 Portugal
+455 - Stream 455   -       Eleven Sports 1 Portugal
+456 - Stream 456   -       Eleven Sports 2 Portugal
+457 - Stream 457   -       Eleven Sports 3 Portugal
+458 - Stream 458   -       Eleven Sports 4 Portugal
+459 - Stream 459   -       Eleven Sports 5 Portugal
+460 - Stream 460   -       Sky Sport Football Italy
+461 - Stream 461   -       Sky Sport UNO Italy
+462 - Stream 462   -       Sky Sport Arena Italy
+463 - Stream 463   -       Canal+ Foot France
+464 - Stream 464   -       Canal+ Sport360
+465 - Stream 465   -       Diema Sport Bulgaria
+466 - Stream 466   -       Diema Sport 2 Bulgaria
+467 - Stream 467   -       Diema Sport 3 Bulgaria
+468 - Stream 468   -       Nova Sport Bulgaria
+469 - Stream 469   -       Eurosport 1 Bulgaria
+470 - Stream 470   -       Eurosport 2 Bulgaria
+471 - Stream 471   -       Ring BG
+472 - Stream 472   -       Max Sport 1 Bulgaria
+473 - Stream 473   -       Max Sport 2 Bulgaria
+474 - Stream 474   -       Max Sport 3 Bulgaria
+475 - Stream 475   -       Max Sport 4 Bulgaria
+476 - Stream 476   -       BNT 1 Bulgaria
+477 - Stream 477   -       BNT 2 Bulgaria
+478 - Stream 478   -       BNT 3 Bulgaria
+479 - Stream 479   -       bTV Bulgaria
+480 - Stream 480   -       Nova TV Bulgaria
+481 - Stream 481   -       bTV Action Bulgaria
+482 - Stream 482   -       Diema Bulgaria
+483 - Stream 483   -       FOX HD Bulgaria
+484 - Stream 484   -       bTV Lady Bulgaria
+485 - Stream 485   -       Diema Family Bulgaria 
+486 - Stream 486   -       Canal+ Sport 1 Afrique
+487 - Stream 487   -       Canal+ Sport 2 Afrique
+488 - Stream 488   -       Canal+ Sport 3 Afrique
+489 - Stream 489   -       Canal+ Sport 4 Afrique
+490 - Stream 490   -       Canal+ Sport 5 Afrique
+491 - Stream 491   -       beIN SPORTS Australia 1
+492 - Stream 492   -       beIN SPORTS Australia 2
+493 - Stream 493   -       beIN SPORTS Australia 3
+494 - Stream 494   -       beIN Sports MAX 4 France
+495 - Stream 495   -       beIN Sports MAX 5 France
+496 - Stream 496   -       beIN Sports MAX 6 France
+497 - Stream 497   -       beIN Sports MAX 7 France
+498 - Stream 498   -       beIN Sports MAX 8 France
+499 - Stream 499   -       beIN Sports MAX 9 France 
+500 - Stream 500   -       beIN Sports MAX 10 France
+501 - Stream 501   -       18+
+502 - Stream 502   -       18+
+503 - Stream 503   -       18+
+504 - Stream 504   -       18+
+505 - Stream 505   -       18+
+506 - Stream 506   -       18+
+507 - Stream 507   -       18+
+508 - Stream 508   -       18+
+509 - Stream 509   -       18+
+510 - Stream 510   -       18+
+511 - Stream 511   -       18+
+512 - Stream 512   -       18+
+513 - Stream 513   -       18+
+514 - Stream 514   -       18+
+515 - Stream 515   -       18+
+516 - Stream 516   -       18+
+517 - Stream 517   -       18+
+518 - Stream 518   -       18+
+519 - Stream 519   -       18+
+520 - Stream 520   -       18+
+521 - Stream 521   -      #Vamos Spain 
+522 - Stream 522   -      Barça TV Spain
+523 - Stream 523   -      Real Madrid TV Spain
+524 - Stream 524   -      EuroSport 1 Spain
+525 - Stream 525   -      EuroSport 2 Spain
+526 - Stream 526   -      Movistar Deportes 3 Spain
+527 - Stream 527   -      Movistar Deportes 4 Spain
+528 - Stream 528   -      Movistar Golf Spain
+529 - Stream 529   -      Teledeporte Spain (TDP)
+530 - Stream 530   -      GOL PLAY Spain
+531 - Stream 531   -      Antena 3 Spain
+532 - Stream 532   -      Telecinco Spain
+533 - Stream 533   -      TVE La 1 Spain
+534 - Stream 534   -      La Sexta Spain
+535 - Stream 535   -      Cuatro Spain
+536 - Stream 536   -      La 2 Spain
+537 - Stream 537   -      DAZN F1 ES
+538 - Stream 538   -      DAZN LaLiga
+539 - Stream 539   -      LaLiga SmartBank TV
+540 - Stream 540   -      Canal 11 Portugal
+541 - Stream 541   -      ONE 1 HD Israel
+542-  Stream 542   -      ONE 2 HD Israel
+543 - Stream 543   -      Yes Movies Action Israel
+544 - Stream 544   -      Yes Movies Kids Israel
+545 - Stream 545   -      Yes Movies Comedy Israel
+546 - Stream 546   -      Channel 9 Israel
+547 - Stream 547   -      Channel 10 Israel
+548 - Stream 548   -      Channel 11 Israel
+549 - Stream 549   -      Channel 12 Israel
+550 - Stream 550   -      Viaplay Sports 2 UK
+551 - Stream 551  - Channel 13 Israel
+552 - Stream 552 -  Channel 14 Israel
+553 - Stream 553 -  HOT3 Israel
+554 - Stream 554 -  Sky Sports Racing UK 
+555 - Stream 555 -  Racing Tv UK
+556 - Stream 556 -  Sky Sport Top Event DE
+557 - Stream 557 -  Sky Sport Mix DE
+558 - Stream 558 - Sky Sport Bundesliga 1 HD
+559 - Stream 559 -  Sky Sport Austria 1 HD
+560 - Stream 560 -  TVP1 Poland
+561 - Stream 561  -  TVP2 Poland
+562 - Stream 562 -  Polsat Poland
+563 - Stream 563 -  Motowizja Poland
+564 - Stream 564 -  Polsat Film Poland
+565 - Stream 565 -  TVN HD
+566 - Stream 566 -  Canal+ Premium Poland
+567 - Stream 567 -  Canal+ Family Poland
+568 - Stream 568 -  FilmBox Premium Poland
+569 - Stream 569 -  HBO PL
+570 - Stream 570 -  Canal+ Seriale
+571 - Stream 571 -  SportDigital Fussball
+572 - Stream 572 -   SuperSport MaXimo 1
+573 - Stream 573 -  Match Premier Russia
+574 - Stream 574 -  Sky Sport Golf Italy
+575 - Stream 575 -  Sky Sport MotoGP Italy
+576 - Stream 576 -  Sky Sport Tennis Italy
+577 - Stream 577 -  Sky Sport F1 Italy
+578 - Stream 578 -  BeIN Sports HD Qatar/Arabia
+579 - Stream 579 -  Arena Sport 1 BiH
+580 - Stream 580 -  Arena Sport 4 Croatia
+581 - Stream 581 -  Arena Sport 4 Serbia
+582 - Stream 582 -  Nova Sport Serbia
+583 - Stream 583 -  Prima Sport 1
+584 - Stream 584 -   Prima Sport 2
+585 - Stream 585 -  Prima Sport 3
+586 - Stream 586 -  Prima Sport 4
+587 - Stream 587 -  Sky Sport Select NZ
+588 - Stream 588   -      Sky Sport 1 NZ
+589 - Stream 589   -      Sky Sport 2 NZ
+590 - Stream 590   -      Sky Sport 3 NZ
+591 - Stream 591   -      Sky Sport 4 NZ
+592 - Stream 592   -      Sky Sport 5 NZ
+593 - Stream 593   -      Sky Sport 6 NZ
+594 - Stream 594   -      Sky Sport 7 NZ
+595 - Stream 595   -      Sky Sport 8 NZ
+596 - Stream 596   -      Sky Sport 9 NZ
+597 - Stream 597   -      Viaplay Xtra UK
+598 - Stream 598   -      Willow XTRA
+599 - Stream 599   -      Nova Sports Premier League GR
+600 - Stream 600   -      Abu Dhabi Sports 1 UAE
+601 - Stream 601   -      Abu Dhabi Sports 2 UAE
+602 - Stream 602   -      CTV Canada
+603 - Stream 603   -      Smithsonian Channel
+604 - Stream 604   -      Dubai Sports UAE
+605 - Stream 605   -      Dubai Sports 2 UAE
+606 - Stream 606   -      Dubai Sports 3 UAE
+607 - Stream 607   -      Dubai Racing UAE
+608 - Stream 608   -      Dubai Racing 2 UAE
+609 - Stream 609   -      Abu Dhabi Sports 1 Premium
+610 - Stream 610   -      Abu Dhabi Sports 2 Premium
+611 - Stream 611   -      OnTime Sports
+612 - Stream 612   -      OnTime Sports 2
+613 - Stream 613   -      Newsmax USA
+614 - Stream 614   -      SSC Sport 1
+615 - Stream 615   -      SSC Sport 2
+616 - Stream 616   -      SSC Sport 3
+617 - Stream 617   -      SSC Sport 4
+618 - Stream 618   -      SSC Sport 5
+619 - Stream 619   -      SSC Sport Extra 1
+620 - Stream 620   -      SSC Sport Extra 2
+621 - Stream 621   -      SSC Sport Extra 3
+622 - Stream 622   -      Cosmote Sport 1 HD
+623 - Stream 623   -      Cosmote Sport 2 HD
+624 - Stream 624   -      Cosmote Sport 3 HD
+625 - Stream 625   -      Cosmote Sport 4 HD
+626 - Stream 626   -      Cosmote Sport 5 HD
+627 - Stream 627   -      Cosmote Sport 6 HD
+628 - Stream 628   -      Cosmote Sport 7 HD
+629 - Stream 629   -      Cosmote Sport 8 HD
+630 - Stream 630   -      Cosmote Sport 9 HD
+631 - Stream 631  -  Nova Sports 1 GR
+632 - Stream 632  -  Nova Sports 2 GR
+633 - Stream 633  -  Nova Sports 3 GR
+634 - Stream 634  -  Nova Sports 4 GR
+635 - Stream 635  -   Nova Sports 5 GR
+636 - Stream 636  -    Nova Sports 6 GR
+637 - Stream 637  -  Nova Sports Start GR
+638 - Stream 638  -  Nova Sports Prime GR
+639 - Stream 639  -  Nova Sports News GR
+640 - Stream 640  -  Sport1+ Germany
+641 - Stream 641  -  Sport1 Germany
+642 - Stream 642  -  TNT Sports HD Chile
+643 - Stream 643  -  FOX Deportes USA
+644 - Stream 644   -  TCM USA
+645 - Stream 645   -  L'Équipe France
+646 - Stream 646   -   MAV TV
+647 - Stream 647   -  CMT USA
+648 - Stream 648   -  Boomerang USA
+649 - Stream 649   -  Nicktoons
+650 - Stream 650   -  TeenNick
+651 - Stream 651 -        Destination America
+652 - Stream 652 -        Disney JR
+653 - Stream 653 -        POP TV USA
+654 - Stream 654 -        MY9TV USA
+655 - Stream 655 -        WETV USA
+656 - Stream 656 -        IFC TV USA
+657 - Stream 657 -        Discovery Family USA
+658 - Stream 658 -        Sundance TV
+659 - Stream 659 -        VICE TV
+660 - Stream 660 -        TV ONE USA
+661 - Stream 661 -        MotorTrend
+662 - Stream 662 -        METV USA
+663 - Stream 663 -        NHL Network
+664 - Stream 664 -        ACC Network
+665 - Stream 665 -        FYI
+666 - Stream 666 -        Nick Music
+667 - Stream 667 -        Longhorn Network USA
+668 - Stream 668 -        Universal Kids USA
+669 - Stream 669 -        Crime + Investigation USA
+670 - Stream 670 -        S4C UK
+671 - Stream 671 -        Sky Cinema Premiere UK
+672 - Stream 672 -        Sky Cinema Select UK
+673 - Stream 673 -        Sky Cinema Hits UK
+674 - Stream 674 -        Sky Cinema Greats UK
+675 - Stream 675 -        Sky Cinema Animation UK
+676 - Stream 676 -        Sky Cinema Family UK
+677 - Stream 677 -        Sky Cinema Action UK
+678 - Stream 678 -        Sky Cinema Comedy UK
+679 - Stream 679 -        Sky Cinema Thriller UK
+680 - Stream 680 -        Sky Cinema Drama UK
+680 - Stream 680 -        Sky Cinema Drama UK
+681 - Stream 681 -        Sky Cinema Sci-Fi Horror UK
+682 - Stream 682 -        Sky Showcase UK
+683 - Stream 683 -        Sky Arts UK
+684 - Stream 684 -        Sky Comedy UK
+685 - Stream 685 -        Sky Crime
+686 - Stream 686 -        Sky History
+687 - Stream 687 -        Gold UK
+688 - Stream 688 -        Film4 UK
+689 - Stream 689 -        HBO2 USA
+690 - Stream 690 -        HBO Comedy USA
+691 - Stream 691 -        HBO Family USA
+692 - Stream 692 -        HBO Latino USA
+693 - Stream 693 -        HBO Signature USA
+694 - Stream 694 -        HBO Zone USA
+695 - Stream 695 -        Showtime SHOxBET USA
+696 - Stream 696 -        Comet USA
+697 - Stream 697 -        Cooking Channel USA
+698 - Stream 698 -        TMC Channel USA
+699 - Stream 699 -        Great American Family Channel (GAC)
+700 - Stream 700 -        Tennis+ 1 Streams
+701 - Stream 701 -        Tennis+ 2 Streams
+702 - Stream 702 -        Tennis+ 3 Streams
+703 - Stream 703 -        Tennis+ 4 Streams
+704 - Stream 704 -        Tennis+ 5 Streams
+705 - Stream 705 -        Tennis+ 6 Streams
+706 - Stream 706 -        Tennis+ 7 Streams
+707 - Stream 707 -        Tennis+ 8 Streams
+708 - Stream 708 -        Tennis+ 9 Streams
+709 - Stream 709 -        Tennis+ 10 Streams
+710 - Stream 710 -        Tennis+ 11 Streams
+711 - Stream 711 -        Tennis+ 12 Streams
+712 - Stream 712 -        Tennis+ 13 Streams
+713 - Stream 713 -        Tennis+ 14 Streams
+714 - Stream 714 -        Tennis+ T+ Streams
+715 - Stream 715 -        Cleo TV
+716 - Stream 716 -        Sporting TV Portugal
+717 - Stream 717 -        AXN Movies Portugal
+718 - Stream 718 -        Porto Canal Portugal
+719 - Stream 719 -        RTP 1 Portugal
+720 - Stream 720 -        RTP 2 Portugal
+721 - Stream 721 -        RTP 3 Portugal
+722 - Stream 722 -        SIC Portugal
+723 - Stream 723 -        TVI Portugal
+724 - Stream 724 -        TVI Reality Portugal
+725 - Stream 725 -        Arte DE
+726 - Stream 726 -        3sat DE
+727 - Stream 727 -        ZDF DE
+728 - Stream 728 -        ZDF Info DE
+729 - Stream 729 -        SAT.1 DE
+730 - Stream 730 -        ProSieben (PRO7) DE
+731 - Stream 731 -        Kabel Eins (Kabel 1) DE
+732 - Stream 732 -        Sixx DE
+733 - Stream 733 -        MDR DE
+734 - Stream 734 -        WDR DE
+735 - Stream 735 -        SWR DE
+736 - Stream 736 -        NDR DE
+737 - Stream 737 -        BR Fernsehen DE
+738 - Stream 738 -        SUPER RTL DE
+739 - Stream 739 -        SR Fernsehen DE
+740 - Stream 740 -        HR Fernsehen DE
+741 - Stream 741 -        Ten Sports PK
+742 - Stream 742 -        AXS TV USA
+743 - Stream 743 -        Galavisión USA
+744 - Stream 744 -        Fashion TV
+745 - Stream 745 -        Nat Geo Wild USA
+746 - Stream 746 -        TYC Sports Argentina
+747 - Stream 747 -        C More Football Sweden
+748 - Stream 748 -        COZI TV USA
+749 - Stream 749 -        Mundotoro TV Spain
+750 - Stream 750 -        C SPAN 1
+751 - Stream 751 -        FETV - Family Entertainment Television
+752 - Stream 752 -        Grit Channel
+753 - Stream 753 -        NBC Sports Bay Area
+754 - Stream 754 -        NBC Sports Boston
+755 - Stream 755 -        NBC Sports California
+756 - Stream 756 -        FOX Soccer Plus
+757 - Stream 757 -        Fight Network
+758 - Stream 758 -        Fox Sports 2 USA 
+759 - Stream 759 -        SportsNet New York USA (SNY)
+760 - Stream 760 -        Globo SP
+761 - Stream 761 -        Globo RIO
+762 - Stream 762 -        NESN USA (New England Sports Network)
+763 - Stream 763 -        YES Network USA
+764 - Stream 764 -        Spectrum Sportsnet LA
+765 - Stream 765 -        MSG USA (MSG Network)
+766 - Stream 766 -        ABCNY USA
+767 - Stream 767 -        CBSNY USA
+768 - Stream 768 -        FOXNY USA
+769 - Stream 769 -        NBCNY USA
+770 - Stream 770 -        Marquee Sports Network
+775 - Stream 775 -       Fox Weather Channel
+776 - Stream 776 -       NBC Sports Chicago
+777 - Stream 777 -       NBC Sports Philadelphia
+778 - Stream 778 -       NBC Sports Washington
+779 - Stream 779 -       Max Sport 1 HD HR
+780 - Stream 780 -       Max Sport 2 HD HR
+781 - Stream 781 -       Alkass One
+782 - Stream 782 -       Alkass Two
+783 - Stream 783 -       Alkass Three
+784 - Stream 784 -       Alkass Four
+785 - Stream 785 -       ABS-CBN
+786    - Stream 786 - DSTV Mzansi Magic
+787    - Stream 787 - Fox Sports Argentina
+788    - Stream 788 - Fox Sports 2 Argentina
+789    - Stream 789 - Fox Sports 3 Argentina
+800 - Stream 800 -      6'eren Denmark 
+801 - Stream 801 -      DR1 Denmark
+802 - Stream 802 -      DR2 Denmark
+803 - Stream 803 -      Kanal 4 Denmark 
+804 - Stream 804 -      Kanal 5 Denmark 
+805 - Stream 805 -      CANAL9 Denmark 
+806 - Stream 806 -      MTV Denmark 
+807 - Stream 807 -      TV 2/Bornholm Denmark
+808 - Stream 808 -      TV 2 Sport X Denmark
+809 - Stream 809 -      TV3 Sport Denmark
+810 - Stream 810 -      TV 2 Sport Denmark 
+811 - Stream 811 -      C More Stars 
+812 - Stream 812 -      C More First 
+813 - Stream 813 -      C More Hits 
+814 - Stream 814 -      C More Series 
+815 - Stream 815 -      V Film Premiere 
+816 - Stream 816 -      V Film Family 
+817 - Stream 817 -      TV2 Denmark
+818 - Stream 818 -      TV 2 Zulu 
+819 - Stream 819 -      TV3+ Denmark 
+820 - Stream 820 -      FOX Sports 502 AU
+821 - Stream 821 -      FOX Sports 503 AU 
+822 - Stream 822 -      FOX Sports 504 AU
+823 - Stream 823 -      FOX Sports 505 AU 
+824 - Stream 824 -      FOX Sports 506 AU 
+825 - Stream 825 -      FOX Sports 507 AU 
+826 - Stream 826 -      Liverpool TV (LFC TV) 
+827 - Stream 827 -      DSTV M-Net 
+828 - Stream 828 -      DSTV kykNET & kie 
+829 - Stream 829 -      MASN USA
+830 - Stream 830 -      Fox Sports Premium MX 
+831 - Stream 831 -      Citytv 
+832 - Stream 832 -      CBC CA
+833 - Stream 833 -      TVA Sports
+834 - Stream 834 -      TVA Sports 2
+835 - Stream 835 -      Noovo CA 
+836 - Stream 836 -      Global CA 
+837 - Stream 837 -      Yes TV CA 
+838 - Stream 838 -      CTV 2 CA 
+839 - Stream 839 -      RDS CA 
+840 - Stream 840 -      RDS 2 CA 
+841 - Stream 841 -      RDS Info CA 
+842 - Stream 842 -      TVO CA
+850 - Stream 850 -     Rai 1 Italy
+851 - Stream 851 -     Rai 2 Italy
+852 - Stream 852 -     Rai 3 Italy
+853 - Stream 853 -     Rai 3 Italy
+854 - Stream 854 -     Italia 1 Italy
+855 - Stream 855 -     La7 Italy
+856 - Stream 856 -     LA7d HD+ Italy
+857 - Stream 857 -     20 Mediaset Italy
+858 - Stream 858 -     Rai Premium Italy
+859 - Stream 559 -     Sky Cinema Collection Italy
+860 - Stream 860 -     Sky Cinema Uno Italy
+861 - Stream 861 -     Sky Cinema Action Italy
+862 - Stream 862 -     Sky Cinema Comedy Italy
+863 - Stream 863 -     Sky Cinema Uno +24 Italy
+864 - Stream 864 -     Sky Cinema Romance Italy
+865 - Stream 865 -     Sky Cinema Family Italy
+866 - Stream 866 -     Sky Cinema Due +24 Italy
+867 - Stream 867 -     Sky Cinema Drama Italy
+868 - Stream 868 -     Sky Cinema Suspense Italy
+869 - Stream 869 -     Sky Sport 24 Italy
+870 - Stream 870 -     Sky Sport Calcio Italy
+871 - Stream 871 -     Sky Calcio 1 (251) Italy
+872 - Stream 872 -     Sky Calcio 2 (252) Italy
+873 - Stream 873 -     Sky Calcio 3 (253) Italy
+874 - Stream 874 -     Sky Calcio 4 (254) Italy
+875 - Stream 875 -     Sky Calcio 5 (255) Italy
+876 - Stream 876 -     Sky Calcio 6 (256) Italy
+877 - Stream 877 -     Sky Calcio 7 (257) Italy
+878 - Stream 878 -     Euro Sport 1 Italy
+879 - Stream 879 -     Euro Sport 2 Italy
+880 - Stream 880 -     Sky Serie Italy
+Stream 881 - Sky UNO Italy
+Stream 882 - Rai Sport Italy

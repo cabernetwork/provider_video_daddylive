@@ -21,6 +21,7 @@ import importlib
 import importlib.resources
 import json
 import re
+import time
 
 from lib.plugins.plugin_channels import PluginChannels
 from lib.common.decorators import handle_json_except
@@ -34,7 +35,7 @@ class Channels(PluginChannels):
     def __init__(self, _instance_obj):
         super().__init__(_instance_obj)
 
-        self.search_url = re.compile(b'iframe src=\"(.*?)\" width')
+        self.search_url = re.compile(b'iframe.* src=\"(.*?)\" width')
         self.search_m3u8 = re.compile(b'source:\'(.*?)\'')
         self.search_ch = re.compile(r'div class="grid-item">'
                                     + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
@@ -44,7 +45,7 @@ class Channels(PluginChannels):
         self.ch_db_list = self.db.get_channels(self.plugin_obj.name, self.instance_key)
 
         ch_list = self.get_channel_list()
-        if len(ch_list) == 0:
+        if ch_list is None or len(ch_list) == 0:
             self.logger.warning('DaddyLive channel list is empty from provider, not updating Cabernet')
             return
         self.logger.info("{}: Found {} stations on instance {}"
@@ -68,6 +69,7 @@ class Channels(PluginChannels):
             self.logger.info('{}: {} 1 Unable to obtain url, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
+
         m = re.search(self.search_url, text)
         if not m:
             # unable to obtain the url, abort
@@ -87,7 +89,6 @@ class Channels(PluginChannels):
         header = {
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream.format(_channel_id)}
-
         text = self.get_uri_data(ch_url, _header=header)
         m = re.search(self.search_m3u8, text)
         if not m:
@@ -129,7 +130,9 @@ class Channels(PluginChannels):
         if text is None:
             return
         text = text.replace('\n', ' ')
+        text = re.search('<div class="tabby-tab">((?!<div class="tabby-tab">).)*', text).group()
         match_list = re.findall(self.search_ch, text)
+
         # url, id, name
         for m in match_list:
             if len(m) != 3:
@@ -137,15 +140,15 @@ class Channels(PluginChannels):
                     'get_channel_list - DaddyLive channel extraction failed. Extraction procedure needs updating')
                 return None
             uid = m[1]
-            name = html.unescape(m[2])
+            name = html.unescape(m[2]).strip()
             if name.lower().startswith('the '):
                 name = name[4:]
             group = None
+
             ch = [d for d in tvg_list if d['name'] == name]
             if len(ch):
                 tvg_id = ch[0]['id']
                 ch = [d for d in ch_list if d['id'] == tvg_id]
-
                 if len(ch):
                     ch = ch[0]
                     ch_db_data = self.ch_db_list.get(uid)
@@ -172,9 +175,10 @@ class Channels(PluginChannels):
 
                         ref_url = self.get_channel_ref(uid)
                         if not ref_url:
-                            self.logger.notice('{} BAD CHANNEL found {}:{}'
+                            self.logger.notice('{} BAD CHANNEL found, skipping {}:{}'
                                                .format(self.plugin_obj.name, uid, name))
                             header = None
+                            continue
                         else:
                             header = {'User-agent': utils.DEFAULT_USER_AGENT,
                                       'Referer': ref_url}
@@ -186,9 +190,10 @@ class Channels(PluginChannels):
                     group = [n.get('group') for n in tvg_list if n['name'] == ch['name']]
                     if len(group):
                         group = group[0]
+
                     ch['groups_other'] = group
-                    results.append(ch)
                     ch['found'] = True
+                    results.append(ch)
                     continue
 
             ch_db_data = self.ch_db_list.get(uid)
@@ -198,7 +203,8 @@ class Channels(PluginChannels):
                 thumb = ch_db_data[0]['json']['thumbnail']
                 thumb_size = ch_db_data[0]['json']['thumbnail_size']
                 ref_url = self.get_channel_ref(uid)
-                self.logger.debug('{} Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                if ref_url:
+                    self.logger.debug('{} Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
             else:
                 self.logger.debug('{} New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
                 enabled = True
@@ -236,9 +242,9 @@ class Channels(PluginChannels):
 
         found_tvg_list = [u for u in ch_list if u.get('found') is None]
         for ch in found_tvg_list:
-            self.logger.warning(
-                '{} Channel {} {} from channel_list.json not found on providers site'.format(self.plugin_obj.name,
-                                                                                             ch['id'], ch['name']))
+            self.logger.notice(
+                '{} Channel {} from channel_list.json has different title on providers site'.format(self.plugin_obj.name,
+                                                                                             ch['id']))
         found_tvg_list = [u for u in ch_list if u.get('found') is not None]
         for ch in found_tvg_list:
             del ch['found']
