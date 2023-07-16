@@ -18,7 +18,8 @@ substantial portions of the Software.
 
 
 from lib.plugins.plugin_handler import PluginHandler
-
+from lib.db.db_channels import DBChannels
+import lib.config.config_callbacks
 
 def license_confirmation(_config_obj, _section, _key):
 
@@ -38,4 +39,28 @@ def license_confirmation(_config_obj, _section, _key):
         
     else:
         return 'EPG plugin usage has been disabled'
-        
+
+
+def update_channel_num(_config_obj, _section, _key):
+    """
+    This method is unique since daddylive must reorder the key channel numbers before calling the
+    generic update_channel_num() method which uses those numbers to reorder the display channel numbers.
+    This allows the user to edit the channel name and have the order based on user input.
+    """
+    namespace_l, instance = _section.split('_', 1)
+    db_channels = DBChannels(_config_obj.data)
+    namespaces = db_channels.get_channel_names()
+    namespace = {n['namespace']: n for n in namespaces if namespace_l == n['namespace'].lower()}.keys()
+    if len(namespace) == 0:
+        return 'ERROR: Bad namespace'
+    namespace = list(namespace)[0]
+    ch_list = list(db_channels.get_channels(namespace, instance).values())
+    ch_list.sort(key=lambda d: d[0]['display_name'].casefold())
+    ch_num = 1
+    for ch in ch_list:
+        ch[0]['number'] = ch_num
+        ch_num += 1
+        db_channels.update_number(ch[0])
+    lib.config.config_callbacks.update_channel_num(_config_obj, _section, _key)
+
+

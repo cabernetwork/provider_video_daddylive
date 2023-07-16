@@ -50,7 +50,7 @@ class Channels(PluginChannels):
             return
         self.logger.info("{}: Found {} stations on instance {}"
                          .format(self.plugin_obj.name, len(ch_list), self.instance_key))
-        ch_list = sorted(ch_list, key=lambda d: d['name'].casefold())
+        ch_list.sort(key=lambda d: d['display_name'].casefold())
         ch_num = 1
         for ch in ch_list:
             ch['number'] = ch_num
@@ -155,7 +155,8 @@ class Channels(PluginChannels):
                     if ch_db_data is not None:
                         ch['enabled'] = ch_db_data[0]['enabled']
                         ch['id'] = ch_db_data[0]['uid']
-                        ch['name'] = ch_db_data[0]['json']['name']
+                        ch['name'] = name
+                        ch['display_name'] = ch_db_data[0]['display_name']
                         ch['HD'] = ch_db_data[0]['json']['HD']
                         if ch_db_data[0]['json']['thumbnail'] == ch['thumbnail']:
                             thumb = ch_db_data[0]['json']['thumbnail']
@@ -171,6 +172,7 @@ class Channels(PluginChannels):
                     else:
                         ch['id'] = uid
                         ch['name'] = name
+                        ch['display_name'] = name
                         ch['thumbnail_size'] = self.get_thumbnail_size(ch['thumbnail'], uid)
 
                         ref_url = self.get_channel_ref(uid)
@@ -193,20 +195,31 @@ class Channels(PluginChannels):
 
                     ch['groups_other'] = group
                     ch['found'] = True
-                    results.append(ch)
+
+                    if any(d['id'] == uid for d in results):
+                        self.logger.notice('{} 1 Duplicate channel UID found, ignoring uid:{} name:{}'.format(self.plugin_obj.name, ch['id'], ch['name']))
+                    else:
+                        self.logger.debug('{} 1 Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                        results.append(ch)
                     continue
+
+            if any(d['id'] == uid for d in results):
+                self.logger.notice('{} 2 Duplicate channel UID found, ignoring uid:{} name:{}'.format(self.plugin_obj.name, uid, name))
+                continue
 
             ch_db_data = self.ch_db_list.get(uid)
             if ch_db_data is not None:
                 enabled = ch_db_data[0]['enabled']
+                display_name = ch_db_data[0]['display_name']
                 hd = ch_db_data[0]['json']['HD']
                 thumb = ch_db_data[0]['json']['thumbnail']
                 thumb_size = ch_db_data[0]['json']['thumbnail_size']
                 ref_url = self.get_channel_ref(uid)
                 if ref_url:
-                    self.logger.debug('{} Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                    self.logger.debug('{} 2 Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
             else:
                 self.logger.debug('{} New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
+                display_name = name
                 enabled = True
                 hd = 0
                 thumb = None
@@ -227,6 +240,7 @@ class Channels(PluginChannels):
                 'callsign': uid,
                 'number': 0,
                 'name': name,
+                'display_name': display_name,
                 'HD': hd,
                 'group_hdtv': None,
                 'group_sdtv': None,
