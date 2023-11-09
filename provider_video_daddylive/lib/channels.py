@@ -166,28 +166,24 @@ class Channels(PluginChannels):
                             thumb_size = self.get_thumbnail_size(thumb, uid)
                         ch['thumbnail'] = thumb
                         ch['thumbnail_size'] = thumb_size
-                        ch['ref_url'] = ch_db_data[0]['json']['ref_url']
-                        ch['Header'] = ch_db_data[0]['json']['Header']
-                        ch['use_date_on_m3u8_key'] = False
                     else:
                         ch['id'] = uid
                         ch['name'] = name
                         ch['display_name'] = name
                         ch['thumbnail_size'] = self.get_thumbnail_size(ch['thumbnail'], uid)
 
-                        ref_url = self.get_channel_ref(uid)
-                        if not ref_url:
-                            self.logger.notice('{} BAD CHANNEL found, skipping {}:{}'
-                                               .format(self.plugin_obj.name, uid, name))
-                            header = None
-                            continue
-                        else:
-                            header = {'User-agent': utils.DEFAULT_USER_AGENT,
-                                      'Referer': ref_url}
-                        ch['Header'] = header
-                        ch['ref_url'] = ref_url
-                        ch['use_date_on_m3u8_key'] = False
-                        self.logger.debug('{} New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
+                    ref_url = self.get_channel_ref(uid)
+                    if not ref_url:
+                        self.logger.notice('{} BAD CHANNEL found, skipping {}:{}'
+                                           .format(self.plugin_obj.name, uid, name))
+                        header = None
+                        continue
+                    else:
+                        header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                                  'Referer': ref_url}
+                    ch['Header'] = header
+                    ch['ref_url'] = ref_url
+                    ch['use_date_on_m3u8_key'] = False
 
                     group = [n.get('group') for n in tvg_list if n['name'] == ch['name']]
                     if len(group):
@@ -214,11 +210,14 @@ class Channels(PluginChannels):
                 hd = ch_db_data[0]['json']['HD']
                 thumb = ch_db_data[0]['json']['thumbnail']
                 thumb_size = ch_db_data[0]['json']['thumbnail_size']
-                ref_url = self.get_channel_ref(uid)
-                if ref_url:
-                    self.logger.debug('{} 2 Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                if not ch_db_data[0]['enabled']:
+                    ref_url = ch_db_data[0]['json']['ref_url']
+                else:
+                    ref_url = self.get_channel_ref(uid)
+                    if ref_url:
+                        self.logger.debug('{} 2 Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
             else:
-                self.logger.debug('{} New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
+                self.logger.debug('{} 2 New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
                 display_name = name
                 enabled = True
                 hd = 0
@@ -227,8 +226,6 @@ class Channels(PluginChannels):
                 ref_url = self.get_channel_ref(uid)
 
             if not ref_url:
-                self.logger.notice('{} BAD CHANNEL found {}:{}'
-                                   .format(self.plugin_obj.name, uid, name))
                 header = None
             else:
                 header = {'User-agent': utils.DEFAULT_USER_AGENT,

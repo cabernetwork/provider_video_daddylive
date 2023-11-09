@@ -18,7 +18,7 @@ substantial portions of the Software.
 """
 
 
-daddylive_base = 'gfpMXf5BjIUojZp3txpSyx7Ntb3oj8lJjG=='
+daddylive_base = 'gfpMXf5BjIUoyx3oj8lJjG=='
 daddylive_channels = '56nPlIC6gxdFyZrEXISGgfW='
 daddylive_stream = 'XRpItbdPjRlMXZr3yqCT1qSGgfW='
 
