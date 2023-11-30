@@ -30,6 +30,8 @@ class DaddyLive(PluginObj):
     def __init__(self, _plugin, _plugins):
         super().__init__(_plugin)
         self.plugins = _plugins
+        # create an instance is none are present
+        self.enable_instance(self.namespace, None)
         if self.config_obj.data[self.namespace.lower()]['epg-plugin'] == 'ALL':
             self.enable_instance('TVGuide', 'default')
         for inst in _plugin.instances:
@@ -37,6 +39,7 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_base = self.uncompress(translations.daddylive_base)
         self.unc_daddylive_channels = self.uncompress(translations.daddylive_channels)
         self.unc_daddylive_stream = self.uncompress(translations.daddylive_stream)
+
 
     def scan_channels(self, _instance=None):
         """

@@ -99,7 +99,8 @@ class Channels(PluginChannels):
         stream_url = m[1].decode('utf8')
 
         if self.config_obj.data[self.config_section]['player-stream_type'] == 'm3u8redirect':
-            self.logger.warning('Stream Type of m3u8redirect not available with this plugin')
+            self.logger.warning('{}:{} Stream Type of m3u8redirect not available with this plugin'
+                .format(self.plugin_obj.name, self.instance_key))
             return stream_url
 
         m3u8_uri = self.get_best_stream(stream_url, _channel_id, ch_url)
@@ -132,7 +133,6 @@ class Channels(PluginChannels):
         text = text.replace('\n', ' ')
         text = re.search('<div class="tabby-tab">((?!<div class="tabby-tab">).)*', text).group()
         match_list = re.findall(self.search_ch, text)
-
         # url, id, name
         for m in match_list:
             if len(m) != 3:
@@ -172,15 +172,23 @@ class Channels(PluginChannels):
                         ch['display_name'] = name
                         ch['thumbnail_size'] = self.get_thumbnail_size(ch['thumbnail'], uid)
 
-                    ref_url = self.get_channel_ref(uid)
-                    if not ref_url:
-                        self.logger.notice('{} BAD CHANNEL found, skipping {}:{}'
-                                           .format(self.plugin_obj.name, uid, name))
-                        header = None
-                        continue
+                    if ch['enabled']:
+                        ref_url = self.get_channel_ref(uid)
+                        if not ref_url:
+                            self.logger.notice('{} BAD CHANNEL found, skipping {}:{}'
+                                               .format(self.plugin_obj.name, uid, name))
+                            header = None
+                            continue
+                        else:
+                            header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                                      'Referer': ref_url}
+                    elif ch.get('Header'):
+                        header = ch['Header']
+                        ref_url = ch['ref_url']
                     else:
-                        header = {'User-agent': utils.DEFAULT_USER_AGENT,
-                                  'Referer': ref_url}
+                        header = None
+                        ref_url = None
+                        
                     ch['Header'] = header
                     ch['ref_url'] = ref_url
                     ch['use_date_on_m3u8_key'] = False
@@ -193,14 +201,20 @@ class Channels(PluginChannels):
                     ch['found'] = True
 
                     if any(d['id'] == uid for d in results):
-                        self.logger.notice('{} 1 Duplicate channel UID found, ignoring uid:{} name:{}'.format(self.plugin_obj.name, ch['id'], ch['name']))
+                        self.logger.notice('{}:{} 1 Duplicate channel UID found, ignoring uid:{} name:{}'
+                            .format(self.plugin_obj.name, self.instance_key, ch['id'], ch['name']))
+                    elif ch['enabled']:
+                        self.logger.info('{}:{} 1 Updating Channel {}:{}'
+                            .format(self.plugin_obj.name, self.instance_key, uid, name))
+                        results.append(ch)
                     else:
-                        self.logger.debug('{} 1 Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                        #self.logger.debug('{} 1 Skipping Channel {}:{}'.format(self.plugin_obj.name, uid, name))
                         results.append(ch)
                     continue
 
             if any(d['id'] == uid for d in results):
-                self.logger.notice('{} 2 Duplicate channel UID found, ignoring uid:{} name:{}'.format(self.plugin_obj.name, uid, name))
+                self.logger.notice('{}:{} 2 Duplicate channel UID found, ignoring uid:{} name:{}'
+                    .format(self.plugin_obj.name, self.instance_key, uid, name))
                 continue
 
             ch_db_data = self.ch_db_list.get(uid)
@@ -215,9 +229,11 @@ class Channels(PluginChannels):
                 else:
                     ref_url = self.get_channel_ref(uid)
                     if ref_url:
-                        self.logger.debug('{} 2 Updating Channel {}:{}'.format(self.plugin_obj.name, uid, name))
+                        self.logger.info('{}:{} 2 Updating Channel {}:{}'
+                            .format(self.plugin_obj.name, self.instance_key, uid, name))
             else:
-                self.logger.debug('{} 2 New Channel Added {}:{}'.format(self.plugin_obj.name, uid, name))
+                self.logger.info('{}:{} 2 New Channel Added {}:{}'
+                    .format(self.plugin_obj.name, self.instance_key, uid, name))
                 display_name = name
                 enabled = True
                 hd = 0
@@ -254,8 +270,8 @@ class Channels(PluginChannels):
         found_tvg_list = [u for u in ch_list if u.get('found') is None]
         for ch in found_tvg_list:
             self.logger.notice(
-                '{} Channel {} from channel_list.json has different title on providers site'.format(self.plugin_obj.name,
-                                                                                             ch['id']))
+                '{}:{} Channel {} from channel_list.json has different title on providers site'
+                    .format(self.plugin_obj.name, self.instance_key, ch['id']))
         found_tvg_list = [u for u in ch_list if u.get('found') is not None]
         for ch in found_tvg_list:
             del ch['found']

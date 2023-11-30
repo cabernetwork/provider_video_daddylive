@@ -74,7 +74,7 @@ class EPG(PluginEPG):
         start_time = self.midnight + datetime.timedelta(days=_epg_day)
         start_seconds = int(start_time.timestamp())
 
-        channel_list = self.db_channels.get_channels(self.plugin_obj.name, self.instance_key)
+        channel_list = self.db_channels.get_channels(self.plugin_obj.name, self.instance_key, True)
 
         for ch in channel_list.values():
             ch = ch[0]
@@ -83,9 +83,6 @@ class EPG(PluginEPG):
             if self.config_obj.data[self.plugin_obj.name.lower()]['epg-plugin'] == 'None':
                 # make sure if the epg plugin is not set, then skip it
                 epg_id = None
-            if not ch['enabled']:
-                # skip if channel is disabled
-                continue
             if epg_id is None:
                 # daddylive has no epg, so if epg_id is not listed, then 
                 # add to missing list

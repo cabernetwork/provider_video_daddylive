@@ -3,7 +3,7 @@
         "id": "provider_video_daddylive",
         "name": "DaddyLive",
         "version": {
-            "current": "0.1.12"
+            "current": "0.1.13"
         },
         "requires": [{
             "cabernet": {
