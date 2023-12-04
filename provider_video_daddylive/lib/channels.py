@@ -103,7 +103,7 @@ class Channels(PluginChannels):
                 .format(self.plugin_obj.name, self.instance_key))
             return stream_url
 
-        m3u8_uri = self.get_best_stream(stream_url, _channel_id, ch_url)
+        m3u8_uri = self.get_best_stream(stream_url, 2, _channel_id, ch_url)
         if not m3u8_uri:
             return stream_url
         return m3u8_uri
@@ -163,14 +163,14 @@ class Channels(PluginChannels):
                             thumb_size = ch_db_data[0]['json']['thumbnail_size']
                         else:
                             thumb = ch['thumbnail']
-                            thumb_size = self.get_thumbnail_size(thumb, uid)
+                            thumb_size = self.get_thumbnail_size(thumb, 2, uid)
                         ch['thumbnail'] = thumb
                         ch['thumbnail_size'] = thumb_size
                     else:
                         ch['id'] = uid
                         ch['name'] = name
                         ch['display_name'] = name
-                        ch['thumbnail_size'] = self.get_thumbnail_size(ch['thumbnail'], uid)
+                        ch['thumbnail_size'] = self.get_thumbnail_size(ch['thumbnail'], 2, uid)
 
                     if ch['enabled']:
                         ref_url = self.get_channel_ref(uid)
