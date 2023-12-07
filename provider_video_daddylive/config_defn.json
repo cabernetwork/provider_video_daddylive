@@ -63,6 +63,13 @@
                         "level": 3,
                         "help": "Default: 110. Used on internalproxy, streamlinkproxy and ffmpegproxy. Time in seconds to shutdown stream when no data comes from provider.  Should be about 4x HTTPRetries*HTTPTimeout"
                     },
+                    "stream-g_concurrent_downloads":{
+                        "label": "Concurrent Downloads",
+                        "type": "integer",
+                        "default": 3,
+                        "level": 3,
+                        "help": "Default: 3. Only used on internalproxy. Number of parallel video packet downloads happening at one time.  A value of one means no parallel processing.  Helps when provider requests are timing out."
+                    },
                     "stream-g_http_timeout":{
                         "label": "HTTP Timeout",
                         "type": "integer",
