@@ -56,6 +56,27 @@
                         "level": 2,
                         "help": "Default: False. For internalpproxy, when the provider stops sending packets or the stream is being filtered for 15 seconds, will send a ATSC keep-alive msg to client"
                     },
+                    "stream-g_stream_timeout":{
+                        "label": "Stream Timeout",
+                        "type": "integer",
+                        "default": 140,
+                        "level": 3,
+                        "help": "Default: 110. Used on internalproxy, streamlinkproxy and ffmpegproxy. Time in seconds to shutdown stream when no data comes from provider.  Should be about 4x HTTPRetries*HTTPTimeout"
+                    },
+                    "stream-g_http_timeout":{
+                        "label": "HTTP Timeout",
+                        "type": "integer",
+                        "default": 8,
+                        "level": 3,
+                        "help": "Default: 8. Only used on internalproxy. Time in seconds for the time to wait for the provider to respond for each HTTP video packet request"
+                    },
+                    "stream-g_http_retries":{
+                        "label": "HTTP Retries",
+                        "type": "integer",
+                        "default": 4,
+                        "level": 3,
+                        "help": "Default: 4. Only used on internalproxy. Number of times the HTTP video packet request occurs when errors are returned by provider"
+                    },
                     "epg-plugin":{
                         "label": "EPG Plugin to Use",
                         "type": "list",

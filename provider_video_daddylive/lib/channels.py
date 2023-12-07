@@ -64,7 +64,7 @@ class Channels(PluginChannels):
         gets the referer required to obtain the ts or stream files from server
         """
         text = self.get_uri_data(self.plugin_obj.unc_daddylive_base +
-                                 self.plugin_obj.unc_daddylive_stream.format(_channel_id))
+                                 self.plugin_obj.unc_daddylive_stream.format(_channel_id), 2)
         if not text:
             self.logger.info('{}: {} 1 Unable to obtain url, aborting'
                              .format(self.plugin_obj.name, _channel_id))
@@ -89,7 +89,7 @@ class Channels(PluginChannels):
         header = {
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream.format(_channel_id)}
-        text = self.get_uri_data(ch_url, _header=header)
+        text = self.get_uri_data(ch_url, 2, _header=header)
         m = re.search(self.search_m3u8, text)
         if not m:
             # unable to obtain the url, abort
@@ -127,7 +127,7 @@ class Channels(PluginChannels):
 
         # Get the list of channels daddylive provides by channel name
         uri = self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_channels
-        text = self.get_uri_data(uri).decode()
+        text = self.get_uri_data(uri, 2).decode()
         if text is None:
             return
         text = text.replace('\n', ' ')

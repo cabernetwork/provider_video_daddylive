@@ -265,7 +265,7 @@ class EPG(PluginEPG):
         data from online provider and place info into the epg programs database
         """
         uri = self.plugin_obj.unc_daddylive_prog_details.format(_prog_id)
-        prog_details = self.get_uri_data(uri)
+        prog_details = self.get_uri_data(uri, 2)
 
         prog_details = prog_details['data']['item']
         if prog_details['title'] is None:
