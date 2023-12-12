@@ -66,9 +66,9 @@
                     "stream-g_concurrent_downloads":{
                         "label": "Concurrent Downloads",
                         "type": "integer",
-                        "default": 3,
+                        "default": 4,
                         "level": 3,
-                        "help": "Default: 3. Only used on internalproxy. Number of parallel video packet downloads happening at one time.  A value of one means no parallel processing.  Helps when provider requests are timing out."
+                        "help": "Default: 4. Only used on internalproxy. Number of parallel video packet downloads happening at one time.  A value of one means no parallel processing.  Helps when provider requests are timing out."
                     },
                     "stream-g_http_timeout":{
                         "label": "HTTP Timeout",
