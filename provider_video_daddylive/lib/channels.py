@@ -181,7 +181,8 @@ class Channels(PluginChannels):
                             continue
                         else:
                             header = {'User-agent': utils.DEFAULT_USER_AGENT,
-                                      'Referer': ref_url}
+                                      'Referer': ref_url,
+                                      'Origin' : ref_url}
                     elif ch.get('Header'):
                         header = ch['Header']
                         ref_url = ch['ref_url']
@@ -245,7 +246,8 @@ class Channels(PluginChannels):
                 header = None
             else:
                 header = {'User-agent': utils.DEFAULT_USER_AGENT,
-                          'Referer': ref_url}
+                          'Referer': ref_url,
+                          'Origin' : ref_url}
 
             channel = {
                 'id': uid,
