@@ -22,6 +22,7 @@ import importlib.resources
 import json
 import re
 import time
+import urllib.parse
 
 from lib.plugins.plugin_channels import PluginChannels
 from lib.common.decorators import handle_json_except
@@ -180,9 +181,12 @@ class Channels(PluginChannels):
                             header = None
                             continue
                         else:
+                            parsed_url = urllib.parse.urlsplit(ref_url)
+                            origin_url = parsed_url.scheme + '://' + parsed_url.netloc
+                            ref_url = origin_url + '/'
                             header = {'User-agent': utils.DEFAULT_USER_AGENT,
                                       'Referer': ref_url,
-                                      'Origin' : ref_url}
+                                      'Origin' : origin_url}
                     elif ch.get('Header'):
                         header = ch['Header']
                         ref_url = ch['ref_url']
@@ -230,6 +234,8 @@ class Channels(PluginChannels):
                 else:
                     ref_url = self.get_channel_ref(uid)
                     if ref_url:
+                        parsed_url = urllib.parse.urlsplit(ref_url)
+                        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
                         self.logger.info('{}:{} 2 Updating Channel {}:{}'
                             .format(self.plugin_obj.name, self.instance_key, uid, name))
             else:
@@ -241,13 +247,16 @@ class Channels(PluginChannels):
                 thumb = None
                 thumb_size = None
                 ref_url = self.get_channel_ref(uid)
+                if ref_url:
+                    parsed_url = urllib.parse.urlsplit(ref_url)
+                    ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
 
             if not ref_url:
                 header = None
             else:
                 header = {'User-agent': utils.DEFAULT_USER_AGENT,
                           'Referer': ref_url,
-                          'Origin' : ref_url}
+                          'Origin' : ref_url[:-1]}
 
             channel = {
                 'id': uid,
