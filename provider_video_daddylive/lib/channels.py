@@ -104,7 +104,10 @@ class Channels(PluginChannels):
                 .format(self.plugin_obj.name, self.instance_key))
             return stream_url
 
-        m3u8_uri = self.get_best_stream(stream_url, 2, _channel_id, ch_url)
+        parsed_url = urllib.parse.urlsplit(ch_url)
+        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+
+        m3u8_uri = self.get_best_stream(stream_url, 2, _channel_id, ref_url)
         if not m3u8_uri:
             return stream_url
         return m3u8_uri
