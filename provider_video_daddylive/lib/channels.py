@@ -37,7 +37,7 @@ class Channels(PluginChannels):
         super().__init__(_instance_obj)
 
         self.search_url = re.compile(b'iframe.* src=\"(.*?)\" width')
-        self.search_m3u8 = re.compile(b'(?:source|src|file):\s*[\'"]([^\'"]+)')
+        self.search_m3u8 = re.compile(b'(?:source|src|file):\s*[\\\'"](.+?(?=m3u8)+m3u8)')
         self.search_ch = re.compile(r'div class="grid-item">'
                                     + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
         self.ch_db_list = None
@@ -70,7 +70,6 @@ class Channels(PluginChannels):
             self.logger.info('{}: {} 1 Unable to obtain url, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
-
         m = re.search(self.search_url, text)
         if not m:
             # unable to obtain the url, abort
