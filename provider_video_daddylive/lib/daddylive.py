@@ -39,6 +39,7 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_base = self.uncompress(translations.daddylive_base)
         self.unc_daddylive_channels = self.uncompress(translations.daddylive_channels)
         self.unc_daddylive_stream = self.uncompress(translations.daddylive_stream)
+        self.unc_daddylive_dl22e = self.uncompress(translations.daddylive_dl22e)
 
 
     def scan_channels(self, _instance=None):

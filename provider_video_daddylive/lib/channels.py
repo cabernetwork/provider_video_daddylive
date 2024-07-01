@@ -16,6 +16,7 @@ The above copyright notice and this permission notice shall be included in all c
 substantial portions of the Software.
 """
 
+import base64
 import html
 import importlib
 import importlib.resources
@@ -37,7 +38,7 @@ class Channels(PluginChannels):
         super().__init__(_instance_obj)
 
         self.search_url = re.compile(b'iframe.* src=\"(.*?)\" width')
-        self.search_m3u8 = re.compile(b'(?:source|"src"|file):\s*[\\\'"](.+?(?=m3u8)+m3u8)')
+        self.search_m3u8 = re.compile(b'(?:decodeURIComponent\([^"]+\")([^"]+)[^\d]+(\d+)[^"]+\"([^"]+)[^\d]+(\d+)[^\d]+(\d+)[^\d]+(\d+)')
         self.search_ch = re.compile(r'div class="grid-item">'
                                     + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
         self.ch_db_list = None
@@ -90,13 +91,16 @@ class Channels(PluginChannels):
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream.format(_channel_id)}
         text = self.get_uri_data(ch_url, 2, _header=header)
+        
         m = re.search(self.search_m3u8, text)
         if not m:
             # unable to obtain the url, abort
             self.logger.notice('{}: {} Unable to obtain m3u8, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
-        stream_url = m[1].decode('utf8')
+
+        stream_url = self.decode_data(m[1].decode("utf-8"), int(m[2]), m[3].decode("utf-8"), int(m[4]), int(m[5]), int(m[6]))
+        stream_url = stream_url.decode('utf8')
 
         if self.config_obj.data[self.config_section]['player-stream_type'] == 'm3u8redirect':
             self.logger.warning('{}:{} Stream Type of m3u8redirect not available with this plugin'
@@ -130,7 +134,10 @@ class Channels(PluginChannels):
 
         # Get the list of channels daddylive provides by channel name
         uri = self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_channels
-        text = self.get_uri_data(uri, 2).decode()
+        text = self.get_uri_data(uri, 2)
+        if text is None:
+            return
+        text = text.decode()
         if text is None:
             return
         text = text.replace('\n', ' ')
@@ -303,3 +310,66 @@ class Channels(PluginChannels):
             return ch_list
         else:
             return []
+
+    GLOBAL_A = ""
+    def decode_data(self, a, b, c, d, e, f):
+        global GLOBAL_A
+        GLOBAL_A = a
+        f = ""
+        l = len(a)
+        i = 0
+        results = ""
+        while i < l:
+            s = ""
+            while a[i] != c[e]:
+                s += a[i]
+                i += 1
+            b = ""
+            for j in range(len(s)):
+                k = c.index(s[j])
+                b += str(k)
+            i += 1
+            results = results + chr(self.dl25c(b, e, 10) - d)
+        search_string = re.compile('(?:.+\')([^\']+)\';')
+        m = re.search(search_string, results)
+        if not m:
+            # unable to obtain the url, abort
+            self.logger.notice('{}: Unable to find m3u8 string, aborting. {}'
+                               .format(self.plugin_obj.name, results))
+            return
+
+        enc_stream_url = m[1]
+        stream_url = base64.b64decode(enc_stream_url)
+        return stream_url
+
+        
+    def dl25c(self, a, b, c):
+        global GLOBAL_A
+        g = self.plugin_obj.unc_daddylive_dl22e
+        s = slice(0, b)
+        h = g[s]
+        s = slice(0, c)
+        i = g[s]
+        j = a[::-1]
+        w = 0
+        total = 0
+        for x in j:
+            total = self.p(total, x, w, b, h)
+            w += 1
+        j = total
+        k = ""
+        while j > 0:
+            k = i[int(j % c)] + k
+            j = (j - (j % c)) / c
+        if k == '':
+            k = '0'
+            self.logger.warning('###### K is blank and should not happen')
+        return int(k)
+    
+    def p(self, total, value, index, b, h):
+        global GLOBAL_A
+        z = h.find(value)
+        if z != -1:
+            total += z * pow(b, index)
+        return total
+    
