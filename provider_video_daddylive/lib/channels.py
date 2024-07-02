@@ -39,7 +39,7 @@ class Channels(PluginChannels):
 
         self.search_url = re.compile(b'iframe.* src=\"(.*?)\" width')
         #self.search_m3u8 = re.compile(b'(?:decodeURIComponent\([^"]+\")([^"]+)[^\d]+(\d+)[^"]+\"([^"]+)[^\d]+(\d+)[^\d]+(\d+)[^\d]+(\d+)')
-        self.search_m3u8 = re.compile(b'src: "([^"]+)')
+        self.search_m3u8 = re.compile(b'(?:source|src): [\'"]([^"\']+)')
         self.search_ch = re.compile(r'div class="grid-item">'
                                     + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
         self.ch_db_list = None
