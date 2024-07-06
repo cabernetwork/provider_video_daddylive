@@ -39,7 +39,8 @@ class Channels(PluginChannels):
 
         self.search_url = re.compile(b'iframe.* src=\"(.*?)\" width')
         #self.search_m3u8 = re.compile(b'(?:decodeURIComponent\([^"]+\")([^"]+)[^\d]+(\d+)[^"]+\"([^"]+)[^\d]+(\d+)[^\d]+(\d+)[^\d]+(\d+)')
-        self.search_m3u8 = re.compile(b'(?:source|src): [\'"]([^"\']+)')
+        #self.search_m3u8 = re.compile(b'(?:source|src): [\'"]([^"\']+)')
+        self.search_m3u8 = re.compile(b'(?s)encryptedSource =\s*"([^"]*)')
         self.search_ch = re.compile(r'div class="grid-item">'
                                     + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
         self.ch_db_list = None
@@ -94,6 +95,7 @@ class Channels(PluginChannels):
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream.format(_channel_id)}
         text = self.get_uri_data(ch_url, 2, _header=header)
         
+        
         m = re.search(self.search_m3u8, text)
         if not m:
             # unable to obtain the url, abort
@@ -101,7 +103,8 @@ class Channels(PluginChannels):
                                .format(self.plugin_obj.name, _channel_id))
             return
 
-        stream_url = m[1]
+        enc_stream_url = m[1]
+        stream_url = base64.b64decode(enc_stream_url)
         #stream_url = self.decode_data(m[1].decode("utf-8"), int(m[2]), m[3].decode("utf-8"), int(m[4]), int(m[5]), int(m[6]))
         stream_url = stream_url.decode('utf8')
 
