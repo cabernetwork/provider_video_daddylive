@@ -23,7 +23,7 @@ from lib.plugins.plugin_obj import PluginObj
 
 from .daddylive_instance import DaddyLiveInstance
 from ..lib import translations
-
+import lib.common.utils as utils
 
 class DaddyLive(PluginObj):
 
@@ -40,7 +40,7 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_channels = self.uncompress(translations.daddylive_channels)
         self.unc_daddylive_stream = self.uncompress(translations.daddylive_stream)
         self.unc_daddylive_dl22e = self.uncompress(translations.daddylive_dl22e)
-
+        utils.DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
 
     def scan_channels(self, _instance=None):
         """
