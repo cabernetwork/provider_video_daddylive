@@ -34,6 +34,7 @@ class DaddyLive(PluginObj):
         self.enable_instance(self.namespace, None)
         if self.config_obj.data[self.namespace.lower()]['epg-plugin'] == 'ALL':
             self.enable_instance('TVGuide', 'default')
+        self.unc_daddylive_dl25f = self.uncompress(translations.daddylive_dl25f).encode()
         for inst in _plugin.instances:
             self.instances[inst] = DaddyLiveInstance(self, inst)
         self.unc_daddylive_base = self.uncompress(translations.daddylive_base)
@@ -41,6 +42,7 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_stream = self.uncompress(translations.daddylive_stream)
         self.unc_daddylive_dl22e = self.uncompress(translations.daddylive_dl22e)
         utils.DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+
 
     def scan_channels(self, _instance=None):
         """
