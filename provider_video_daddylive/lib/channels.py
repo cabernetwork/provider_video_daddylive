@@ -92,7 +92,6 @@ class Channels(PluginChannels):
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream.format(_channel_id)}
         text = self.get_uri_data(ch_url, 2, _header=header)
-
         m = re.search(self.search_m3u8, text)
         if not m:
             # unable to obtain the url, abort
@@ -104,6 +103,9 @@ class Channels(PluginChannels):
         #stream_url = base64.b64decode(enc_stream_url)
         #stream_url = self.decode_data(m[1].decode("utf-8"), int(m[2]), m[3].decode("utf-8"), int(m[4]), int(m[5]), int(m[6]))
         stream_url = stream_url.decode('utf8')
+
+        if not stream_url.endswith('m3u8'):
+            self.logger.notice('m3u8 file may not be provided correctly')
 
         if self.config_obj.data[self.config_section]['player-stream_type'] == 'm3u8redirect':
             self.logger.warning('{}:{} Stream Type of m3u8redirect not available with this plugin'
