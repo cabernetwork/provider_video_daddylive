@@ -67,13 +67,21 @@ class DaddyLive(PluginObj):
             self.plugin.enabled = False
 
     def scheduler_tasks(self):
-        sched_epg_hours = 6
+        sched_epg_hours_1 = 4
+        sched_epg_hours_2 = 18
         sched_epg_mins = random.randint(1, 55)
-        sched_epg = '{:0>2d}:{:0>2d}'.format(sched_epg_hours, sched_epg_mins)
+        sched_epg_1 = '{:0>2d}:{:0>2d}'.format(sched_epg_hours_1, sched_epg_mins)
+        sched_epg_2 = '{:0>2d}:{:0>2d}'.format(sched_epg_hours_2, sched_epg_mins)
         sched_ch_hours = self.utc_to_local_time(23)
         sched_ch_mins = random.randint(1, 55)
         sched_ch = '{:0>2d}:{:0>2d}'.format(sched_ch_hours, sched_ch_mins)
 
+        # TBD ### Temporary to reset the channel to every 48 hours
+        self.scheduler_db.del_task('Channels',
+            'Refresh {} Channels'.format(self.namespace))
+        self.scheduler_db.del_task('EPG',
+                'Refresh {} EPG'.format(self.namespace))
+                
         if self.scheduler_db.save_task(
                 'Channels',
                 'Refresh {} Channels'.format(self.namespace),
@@ -91,8 +99,8 @@ class DaddyLive(PluginObj):
             self.scheduler_db.save_trigger(
                 'Channels',
                 'Refresh {} Channels'.format(self.namespace),
-                'daily',
-                timeofday=sched_ch
+                'interval',
+                interval=2880
             )
         if self.scheduler_db.save_task(
                 'EPG',
@@ -113,5 +121,11 @@ class DaddyLive(PluginObj):
                 'EPG',
                 'Refresh {} EPG'.format(self.namespace),
                 'daily',
-                timeofday=sched_epg
+                timeofday=sched_epg_1
+            )
+            self.scheduler_db.save_trigger(
+                'EPG',
+                'Refresh {} EPG'.format(self.namespace),
+                'daily',
+                timeofday=sched_epg_2
             )

@@ -146,13 +146,8 @@ class Channels(PluginChannels):
         if text is None:
             return
         text = text.replace('\n', ' ')
-        # Change the search code for DL 24/7 list to exclude "Full List" (tab-1) and combine the individual letter sorted lists
-        # Not all channels are present on the "Full List" but are on the individual lists
-        # Find all tables 2-99
         text_list = re.findall('<label for="tab-([2-9]|[1-9][0-9])">(.*?)</center>\s*</div>\s*</div>', text)
-        # Old search: text = re.search('<div class="tabby-tab">((?!<div class="tabby-tab">).)*', text).group()
         text_combine = ''
-        # Loop through the list of tuples and combine all DL lettered lists into one string
         for i in range(len(text_list)):
             text_combine = text_combine + text_list[i][1]
         match_list = re.findall(self.search_ch, text_combine)
