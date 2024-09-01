@@ -20,6 +20,8 @@ substantial portions of the Software.
 
 daddylive_base = 'gfpMXf5BjIUoyx3oj8lQjG=='
 daddylive_channels = '56nPlIC6gxdFyZrEXISGgfW='
-daddylive_stream = 'XRpItbdPjRlMXZr3yqCT1qSGgfW='
+daddylive_stream_stream = 'XRpItbdPjRlMXZr3yqCT1qSGgfW='
+daddylive_stream_cast = 'kNdKzwUKzfi7kbMP0RMFXx3G'
 daddylive_dl22e = b'5c9I5KnCl6XJmbdYkNp7tZz+gb/OyxCFyRaLX8lMzstR0f7Bnhicp9rxpM3iqoP54hSuhddqhCprr7zkbr+OjG=='
-daddylive_dl25f = b'vcUKvrEYiCM+gfpMXdP0swXYsqPXjZMKz4e/bCG827MA'
+daddylive_dl25f_stream = b'vcUKvrEYiCM+gfpMXdP0swXYsqPXjZMKz4e/bCG827MA'
+daddylive_dl25f_cast = b'vcUKvrEYiCM+gfpMXdP0swXYsqPXjZMKz4e/bCG827MA'

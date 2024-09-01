@@ -63,6 +63,14 @@
                         "level": 1,
                         "help": "Default: internalproxy. M3U8 send m3u8 file directly to client.  ffmpeg uses ffmpeg for m3u8 urls. streamlink uses the python module streamlink. internal uses internally coded modules."
                     },
+                    "player-number":{
+                        "label": "Player Number",
+                        "type": "list",
+                        "default": 1,
+                        "values": [1, 2],
+                        "level": 2,
+                        "help": "Default: 1. Maps to the DL player number.  Not all channels have multiple players."
+                    },
                     "player-stream_quality":{
                         "label": "Maximum Stream Quality",
                         "type": "integer",
