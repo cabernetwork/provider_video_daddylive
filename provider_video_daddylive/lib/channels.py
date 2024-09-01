@@ -39,8 +39,8 @@ class Channels(PluginChannels):
         super().__init__(_instance_obj)
 
         self.pnum = self.config_obj.data[self.config_section]['player-number']
-        self.search_url = re.compile(b'iframe.* src=\"(.*?)\" width')
-        self.search_m3u8 = re.compile(self.plugin_obj.unc_daddylive_dl25f[self.pnum])
+        self.search_url = None
+        self.search_m3u8 = None
         self.search_ch = re.compile(r'div class="grid-item">'
                                     + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
         self.ch_db_list = None
@@ -74,6 +74,7 @@ class Channels(PluginChannels):
             self.logger.info('{}: {} 1 Unable to obtain url, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
+
         m = re.search(self.search_url, text)
         if not m:
             # unable to obtain the url, abort
@@ -86,11 +87,14 @@ class Channels(PluginChannels):
     @handle_json_except
     def get_channel_uri(self, _channel_id):
         self.pnum = self.config_obj.data[self.config_section]['player-number']
+        self.search_url = re.compile(self.plugin_obj.unc_daddylive_dl21a[self.pnum])
+        self.search_m3u8 = re.compile(self.plugin_obj.unc_daddylive_dl25f[self.pnum])
         self.logger.debug('{}: CHID: {} Using Player {}'.format(self.plugin_obj.name, _channel_id, self.pnum))
         json_needs_updating = False
         ch_url = self.get_channel_ref(_channel_id)
         if not ch_url:
             return
+
         header = {
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)}
@@ -98,7 +102,7 @@ class Channels(PluginChannels):
         m = re.search(self.search_m3u8, text)
         if not m:
             # unable to obtain the url, abort
-            self.logger.notice('{}: {} Unable to obtain m3u8, aborting'
+            self.logger.notice('{}: {} Unable to obtain m3u8, possible no player num found for channel, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
 

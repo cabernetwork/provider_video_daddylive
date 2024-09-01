@@ -34,10 +34,14 @@ class DaddyLive(PluginObj):
         self.enable_instance(self.namespace, None)
         if self.config_obj.data[self.namespace.lower()]['epg-plugin'] == 'ALL':
             self.enable_instance('TVGuide', 'default')
-
-        self.unc_daddylive_dl25f = ["" for i in range(4)]
+        self.unc_daddylive_dl25f = [b"" for i in range(4)]
         self.unc_daddylive_dl25f[1] = self.uncompress(translations.daddylive_dl25f_stream).encode()
         self.unc_daddylive_dl25f[2] = self.uncompress(translations.daddylive_dl25f_cast).encode()
+        self.unc_daddylive_dl25f[3] = self.uncompress(translations.daddylive_dl25f_watch).encode()
+        self.unc_daddylive_dl21a = [b"" for i in range(4)]
+        self.unc_daddylive_dl21a[1] = self.uncompress(translations.daddylive_dl21a_stream).encode()
+        self.unc_daddylive_dl21a[2] = self.uncompress(translations.daddylive_dl21a_cast).encode()
+        self.unc_daddylive_dl21a[3] = self.uncompress(translations.daddylive_dl21a_watch).encode()
         for inst in _plugin.instances:
             self.instances[inst] = DaddyLiveInstance(self, inst)
         self.unc_daddylive_base = self.uncompress(translations.daddylive_base)
@@ -45,6 +49,7 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_stream = ["" for i in range(4)]
         self.unc_daddylive_stream[1] = self.uncompress(translations.daddylive_stream_stream)
         self.unc_daddylive_stream[2] = self.uncompress(translations.daddylive_stream_cast)
+        self.unc_daddylive_stream[3] = self.uncompress(translations.daddylive_stream_watch)
         self.unc_daddylive_dl22e = self.uncompress(translations.daddylive_dl22e)
         utils.DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
 
