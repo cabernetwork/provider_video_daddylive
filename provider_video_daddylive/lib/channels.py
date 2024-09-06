@@ -67,6 +67,8 @@ class Channels(PluginChannels):
         """
         gets the referer required to obtain the ts or stream files from server
         """
+        self.pnum = self.config_obj.data[self.config_section]['player-number']
+        self.search_url = re.compile(self.plugin_obj.unc_daddylive_dl21a[self.pnum])
         url = self.plugin_obj.unc_daddylive_base + \
             self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)
         text = self.get_uri_data(url, 2)
@@ -87,7 +89,6 @@ class Channels(PluginChannels):
     @handle_json_except
     def get_channel_uri(self, _channel_id):
         self.pnum = self.config_obj.data[self.config_section]['player-number']
-        self.search_url = re.compile(self.plugin_obj.unc_daddylive_dl21a[self.pnum])
         self.search_m3u8 = re.compile(self.plugin_obj.unc_daddylive_dl25f[self.pnum])
         self.logger.debug('{}: CHID: {} Using Player {}'.format(self.plugin_obj.name, _channel_id, self.pnum))
         json_needs_updating = False
