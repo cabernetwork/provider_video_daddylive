@@ -43,6 +43,7 @@ class Channels(PluginChannels):
         self.search_m3u8 = None
         self.search_ch = re.compile(r'div class="grid-item">'
                                     + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
+        self.groups_other = None
         self.ch_db_list = None
 
     def get_channels(self):
@@ -76,6 +77,15 @@ class Channels(PluginChannels):
             self.logger.info('{}: {} 1 Unable to obtain url, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
+
+        player_ch = re.compile(b'role="button">Player ([0-9])</button>')
+        m=re.findall(player_ch, text)
+        if m:
+            self.groups_other = ['']
+            for p in m:
+                self.groups_other[0] += 'P' + p.decode('utf-8')
+        else:
+            self.groups_other = None
 
         m = re.search(self.search_url, text)
         if not m:
@@ -227,7 +237,12 @@ class Channels(PluginChannels):
                     if len(group):
                         group = group[0]
 
-                    ch['groups_other'] = group
+                    if self.groups_other is not None:
+                        self.groups_other.append(group)
+                    else:
+                        self.groups_other = group
+
+                    ch['groups_other'] = self.groups_other
                     ch['found'] = True
 
                     if any(d['id'] == uid for d in results):
@@ -254,6 +269,7 @@ class Channels(PluginChannels):
                 hd = ch_db_data[0]['json']['HD']
                 thumb = ch_db_data[0]['json']['thumbnail']
                 thumb_size = ch_db_data[0]['json']['thumbnail_size']
+                self.groups_other = ch_db_data[0]['json']['groups_other']
                 if not ch_db_data[0]['enabled']:
                     ref_url = ch_db_data[0]['json']['ref_url']
                 else:
@@ -282,7 +298,6 @@ class Channels(PluginChannels):
                 header = {'User-agent': utils.DEFAULT_USER_AGENT,
                           'Referer': ref_url,
                           'Origin' : ref_url[:-1]}
-
             channel = {
                 'id': uid,
                 'enabled': enabled,
@@ -293,7 +308,7 @@ class Channels(PluginChannels):
                 'HD': hd,
                 'group_hdtv': None,
                 'group_sdtv': None,
-                'groups_other': None,
+                'groups_other': self.groups_other,
                 'thumbnail': thumb,
                 'thumbnail_size': thumb_size,
                 'VOD': False,
