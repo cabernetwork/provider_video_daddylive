@@ -171,6 +171,7 @@ class Channels(PluginChannels):
         match_list = re.findall(self.search_ch, text_combine)
         # url, id, name
         for m in match_list:
+            self.groups_other = None
             if len(m) != 3:
                 self.logger.warning(
                     'get_channel_list - DaddyLive channel extraction failed. Extraction procedure needs updating')
