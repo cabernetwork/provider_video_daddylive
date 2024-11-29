@@ -111,13 +111,14 @@ class DaddyLive(PluginObj):
                 'interval',
                 interval=2880
             )
+        # this runs slow and long, so make it the last one to run with lower priority
         if self.scheduler_db.save_task(
                 'EPG',
                 'Refresh {} EPG'.format(self.namespace),
                 self.name,
                 None,
                 'refresh_epg',
-                10,
+                5,
                 'thread',
                 'Pulls channel program data from {}'.format(self.namespace)
         ):
