@@ -3,7 +3,7 @@
         "id": "provider_video_daddylive",
         "name": "DaddyLive",
         "version": {
-            "current": "0.1.42"
+            "current": "0.1.43"
         },
         "requires": [{
             "cabernet": {
@@ -12,12 +12,12 @@
             }
         }],
         "provider-name": "rocky4546",
-        "summary": "Watch TV channels from dlhd.sx website.",
-        "description": "Watch Free TV! Stream dlhd.sx TV's channels of news, sports, and the Internet's best, completely free.",
+        "summary": "Watch TV channels from thedaddy.to website.",
+        "description": "Watch Free TV! Stream thedaddy.to TV's channels of news, sports, and the Internet's best, completely free.",
         "category": ["video"],
         "license": "MIT License, Copyright (C) 2023 ROCKY4546",
         "source": "https://github.com/cabernetwork/provider_video_daddylive",
-        "forum": "https://tvheadend.org/boards/5/topics/43052",
+        "forum": "https://web.archive.org/web/20221015111333/https://tvheadend.org/boards/5/topics/43052",
         "website": "https://thedaddy.to/",
         "icon": "resources/icon.jpg",
         "fanart": "resources/fanart.png",
