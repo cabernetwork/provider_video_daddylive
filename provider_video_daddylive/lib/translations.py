@@ -18,7 +18,7 @@ substantial portions of the Software.
 """
 
 
-daddylive_base = 'gfpMXf5BjIUMgxrokbpo0qSMyIH='
+daddylive_base = 'gfpMXf5BjIUokbpo0bL/zZhFysWQ='
 daddylive_channels = '56nPlIC6gxdFyZrEXISGgfW='
 daddylive_dl21a_stream = 'gbtIkbC7jY+eXRi6uq2+jY+Vvq2ezN7ozxe='
 daddylive_dl21a_cast = 'gbtIkbC7jY+eXRi6uq2+jY+Vvq2ezN7ozxe='
@@ -30,5 +30,5 @@ daddylive_dl22e = b'5c9I5KnCl6XJmbdYkNp7tZz+gb/OyxCFyRaLX8lMzstR0f7Bnhicp9rxpM3i
 daddylive_dl25f_stream = b'zZdI2xl+kbSFtbLjtsoeuqWYvdP027MAvn=='
 daddylive_dl25f_cast = b'zZdI2xl+kbSFtbLjtsoeuqWYvdP027MAvn=='
 daddylive_dl25f_watch = b'zZdI2xl+kbSFtbLjtsoeuqWYvdP027MAvn=='
-daddylive_key_stream = b'gfpMXf5BjIUT1bS7zIS/yRlGyxdSts2FX8hQ0RMQ0RMQybUFyISP5RhJ'
+daddylive_key_stream = b'gfpMXf5BjIUT1bS7zISOyRlOyRiQXISIzqUT1qUT1qUPyNSQjZMKz4e='
 daddylive_key_url = b'gfpMXf5BjIUFtsz7ybi7tfaEksoF0f7BjRl7X8t7X7UEyNUOzsWFXx3GuNl+kbSFtbL1gbnU0RM='

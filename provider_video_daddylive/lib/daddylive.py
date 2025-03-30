@@ -110,8 +110,9 @@ class DaddyLive(PluginObj):
             self.scheduler_db.save_trigger(
                 'Channels',
                 'Refresh {} Channels'.format(self.namespace),
-                'interval',
-                interval=2880
+                'weekly',
+                dayofweek='Sunday',
+                timeofday=sched_ch
             )
         # this runs slow and long, so make it the last one to run with lower priority
         if self.scheduler_db.save_task(
