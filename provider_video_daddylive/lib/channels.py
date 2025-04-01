@@ -350,7 +350,9 @@ class Channels(PluginChannels):
         text = self.get_uri_data(url, 2)
         m = re.search(b':"([^"]*)', text)
         sKey = m[1].decode('utf8')
-        stream_url = self.plugin_obj.unc_daddylive_key_stream.format(sKey, sKey, cKey)
+        
+        host = self.config_obj.data[self.plugin_obj.name.lower()]['stream-m3u8_host']
+        stream_url = self.plugin_obj.unc_daddylive_key_stream.format(sKey, host, sKey, cKey)
         if not stream_url.endswith('m3u8'):
             self.logger.notice('m3u8 file may not be provided correctly')
         return stream_url

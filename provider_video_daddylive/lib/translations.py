@@ -30,5 +30,5 @@ daddylive_dl22e = b'5c9I5KnCl6XJmbdYkNp7tZz+gb/OyxCFyRaLX8lMzstR0f7Bnhicp9rxpM3i
 daddylive_dl25f_stream = b'zZdI2xl+kbSFtbLjtsoeuqWYvdP027MAvn=='
 daddylive_dl25f_cast = b'zZdI2xl+kbSFtbLjtsoeuqWYvdP027MAvn=='
 daddylive_dl25f_watch = b'zZdI2xl+kbSFtbLjtsoeuqWYvdP027MAvn=='
-daddylive_key_stream = b'gfpMXf5BjIUT1bS7zISOyRlOyRiQXISIzqUT1qUT1qUPyNSQjZMKz4e='
+daddylive_key_stream = b'gfpMXf5BjIUT1sPUjRPUjRPUjNCQyZHFy4lCmW=='
 daddylive_key_url = b'gfpMXf5BjIUFtsz7ybi7tfaEksoF0f7BjRl7X8t7X7UEyNUOzsWFXx3GuNl+kbSFtbL1gbnU0RM='
