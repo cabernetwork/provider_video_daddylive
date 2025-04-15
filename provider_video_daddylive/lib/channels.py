@@ -157,7 +157,7 @@ class Channels(PluginChannels):
         if text is None:
             return
         text = text.replace('\n', ' ')
-        text_list = re.findall('<label for="tab-([2-9]|[1-9][0-9])">(.*?)</center>\s*</div>\s*</div>', text)
+        text_list = re.findall(r'<label for="tab-([2-9]|[1-9][0-9])">(.*?)</center>\s*</div>\s*</div>', text)
         text_combine = ''
         for i in range(len(text_list)):
             text_combine = text_combine + text_list[i][1]
@@ -330,7 +330,7 @@ class Channels(PluginChannels):
         """
         if self.config_obj.data[self.plugin_obj.name.lower()]['epg-plugin'] == 'ALL':
             ch_list = json.loads(
-                importlib.resources.read_text(resources, resource='channel_list.json'))
+                importlib.resources.files(resources).joinpath('channel_list.json').read_text())
             ch_list = sorted(ch_list, key=lambda d: d['zone'])
             return ch_list
         else:
