@@ -79,6 +79,7 @@ class Channels(PluginChannels):
                              .format(self.plugin_obj.name, _channel_id))
             return
 
+
         player_ch = re.compile(b'role="button">Player ([0-9])</button>')
         m=re.findall(player_ch, text)
         if m:
@@ -94,7 +95,27 @@ class Channels(PluginChannels):
             self.logger.info('{}: {} 2 Unable to obtain url, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
-        return m[1].decode('utf8')
+
+        if self.pnum > 2:
+            ch_url = m[2].decode('utf8')
+        else:
+            ch_url = m[1].decode('utf8')
+        parsed_url = urllib.parse.urlsplit(ch_url)
+        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+
+        # update header in db if changed
+        data = self.db.get_channel(_channel_id, self.plugin_obj.name, self.instance_key)
+        if data:
+            ch_json = data['json']
+            h = ch_json['Header']
+            if h:
+                r = h['Referer']
+                if ref_url != r:
+                    ch_json['Header']['Referer'] = ref_url
+                    ch_json['Header']['Origin'] = ref_url
+                    ch_json['ref_url'] = ref_url
+                    self.db.update_channel_json(ch_json, self.plugin_obj.name, self.instance_key)
+        return ch_url
 
     @handle_url_except(timeout=10.0)
     @handle_json_except
@@ -116,7 +137,9 @@ class Channels(PluginChannels):
                                .format(self.plugin_obj.name, _channel_id))
             return
 
-        stream_url = self.find_m3u8(text, _channel_id, header)
+        stream_url = self.find_m3u8(text, _channel_id, header, ch_url)
+        if not stream_url:
+            return
 
         if self.config_obj.data[self.config_section]['player-stream_type'] == 'm3u8redirect':
             self.logger.warning('{}:{} Stream Type of m3u8redirect not available with this plugin'
@@ -215,7 +238,9 @@ class Channels(PluginChannels):
                             ref_url = origin_url + '/'
                             header = {'User-agent': utils.DEFAULT_USER_AGENT,
                                       'Referer': ref_url,
-                                      'Origin' : origin_url}
+                                      'Origin' : origin_url,
+                                      'Connection' : 'Keep-Alive'
+                                      }
                     elif ch.get('Header'):
                         header = ch['Header']
                         ref_url = ch['ref_url']
@@ -291,7 +316,9 @@ class Channels(PluginChannels):
             else:
                 header = {'User-agent': utils.DEFAULT_USER_AGENT,
                           'Referer': ref_url,
-                          'Origin' : ref_url[:-1]}
+                          'Origin' : ref_url[:-1],
+                          'Connection' : 'Keep-Alive'
+                          }
             channel = {
                 'id': uid,
                 'enabled': enabled,
@@ -336,26 +363,41 @@ class Channels(PluginChannels):
         else:
             return []
 
-    def find_m3u8(self, _text, _channel_id, _header):
-        m = re.search(self.search_m3u8, _text)
-        if not m:
+    def find_m3u8(self, _text, _channel_id, _header, _ch_url):
+
+        c_key = re.search(b'(?s) channelKey = \"([^"]*)', _text)
+        if not c_key:
             # unable to obtain the url, abort
             self.logger.notice('{}: {} #2 Unable to obtain m3u8, possible no player num found for channel, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
+        c_key = c_key[1].decode('utf8')
 
-        cKey = m[1].decode('utf8')
-        url = self.plugin_obj.unc_daddylive_key_url.format(cKey)
+        a_sig = re.search(b'(?s) authSig\s*= \"([^"]*)', _text)[1].decode('utf8')
+        a_sig = urllib.parse.quote_plus(a_sig)
+        a_rnd = re.search(b'(?s) authRnd\s*= \"([^"]*)', _text)[1].decode('utf8')
+        a_ts = re.search(b'(?s) authTs\s*= \"([^"]*)', _text)[1].decode('utf8')
+        a_host = re.search(b'\}\s*fetchWithRetry\(\s*\'([^\']*)', _text)[1].decode('utf8')
+        a_url = f'{a_host}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
+        host = re.search(b'(?s)m3u8 =.*?:.*?:.*?".*?".*?"([^"]*)', _text)[1].decode('utf8')
+        key_q = re.search(b'n fetchWithRetry\(\s*\'([^\']*)', _text)[1].decode('utf8')
+        key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
 
-        text = self.get_uri_data(url, 2)
+        auth = self.get_uri_data(a_url, 2, _header)
+        header = {
+            'User-agent': utils.DEFAULT_USER_AGENT,
+            'Referer': _ch_url}
+        text = self.get_uri_data(key_url, 2, header)
         m = re.search(b':"([^"]*)', text)
-        sKey = m[1].decode('utf8')
-        
-        host = self.config_obj.data[self.plugin_obj.name.lower()]['stream-m3u8_host']
-        stream_url = self.plugin_obj.unc_daddylive_key_stream.format(sKey, host, sKey, cKey)
-        if not stream_url.endswith('m3u8'):
-            self.logger.notice('m3u8 file may not be provided correctly')
-        return stream_url
+        try:
+            s_key = m[1].decode('utf8')
+        except TypeError:
+            self.logger.warning('{}: Section key for uid {} is not available, aborting'.format(self.plugin_obj.name, _channel_id))
+            return
+        s_key = m[1].decode('utf8')
+
+        m3u8_url = 'https://{}{}{}/{}/mono.m3u8'.format(s_key, host, s_key, c_key)
+        return m3u8_url
 
     GLOBAL_A = ""
     def decode_data(self, a, b, c, d, e, f):

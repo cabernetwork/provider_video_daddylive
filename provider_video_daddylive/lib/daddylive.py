@@ -53,7 +53,8 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_dl22e = self.uncompress(translations.daddylive_dl22e)
         self.unc_daddylive_key_stream = self.uncompress(translations.daddylive_key_stream)
         self.unc_daddylive_key_url = self.uncompress(translations.daddylive_key_url)
-        utils.DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36'
+        utils.DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
+
 
     def scan_channels(self, _instance=None):
         """
@@ -86,12 +87,6 @@ class DaddyLive(PluginObj):
         sched_ch_hours = self.utc_to_local_time(23)
         sched_ch_mins = random.randint(1, 55)
         sched_ch = '{:0>2d}:{:0>2d}'.format(sched_ch_hours, sched_ch_mins)
-
-        # TBD ### Temporary to reset the channel to every 48 hours
-        self.scheduler_db.del_task('Channels',
-            'Refresh {} Channels'.format(self.namespace))
-        self.scheduler_db.del_task('EPG',
-                'Refresh {} EPG'.format(self.namespace))
                 
         if self.scheduler_db.save_task(
                 'Channels',
@@ -110,8 +105,7 @@ class DaddyLive(PluginObj):
             self.scheduler_db.save_trigger(
                 'Channels',
                 'Refresh {} Channels'.format(self.namespace),
-                'weekly',
-                dayofweek='Sunday',
+                'daily',
                 timeofday=sched_ch
             )
         # this runs slow and long, so make it the last one to run with lower priority

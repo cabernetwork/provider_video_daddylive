@@ -18,11 +18,11 @@ substantial portions of the Software.
 """
 
 
-daddylive_base = 'gfpMXf5BjIUokbpo0bL/zZhFysWQ='
+daddylive_base = 'gfpMXf5BjIUokbpo0bL/zZhFtxdojG=='
 daddylive_channels = '56nPlIC6gxdFyZrEXISGgfW='
-daddylive_dl21a_stream = 'gbtIkbC7jY+eXRi6uq2+jY+Vvq2ezN7ozxe='
-daddylive_dl21a_cast = 'gbtIkbC7jY+eXRi6uq2+jY+Vvq2ezN7ozxe='
-daddylive_dl21a_watch = 'gbtIkbC7jY+eXRi6uq2+jY+Vvq2eyZdPtn=='
+daddylive_dl21a_stream = 'gbtIkbC72flIkKMYvdP027MOvq2ezN7ozxe='
+daddylive_dl21a_cast = 'gbtIkbC72flIkKMYvdP027MOvq2ezN7ozxe='
+daddylive_dl21a_watch = 'gbtIkbC7vweV24L/t8i3ybh/jYoAXRi6uq2+bCJYsqE/2Ye+uI9HgbtIkbC7vqJ/vZ37gbz+zcMYl4WG2e=='
 daddylive_stream_stream = 'XRpItbdPjRlMXZr3yqCT1qSGgfW='
 daddylive_stream_cast = 'kNdKzwUKzfi7kbMP0RMFXx3G'
 daddylive_stream_watch = 'zNdMkNeQXRpItbdPjsPUj8a+XW=='
