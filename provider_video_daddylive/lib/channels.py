@@ -112,9 +112,10 @@ class Channels(PluginChannels):
                 r = h['Referer']
                 if ref_url != r:
                     ch_json['Header']['Referer'] = ref_url
-                    ch_json['Header']['Origin'] = ref_url
+                    ch_json['Header']['Origin'] = ref_url[:-1]
                     ch_json['ref_url'] = ref_url
                     self.db.update_channel_json(ch_json, self.plugin_obj.name, self.instance_key)
+                    self.logger.notice('{}: Player changed for channel {}.  Data has been reset, recommend restarting stream'.format(self.plugin_obj.name, _channel_id))
         return ch_url
 
     @handle_url_except(timeout=10.0)
@@ -247,7 +248,7 @@ class Channels(PluginChannels):
                     else:
                         header = None
                         ref_url = None
-                        
+
                     ch['Header'] = header
                     ch['ref_url'] = ref_url
                     ch['use_date_on_m3u8_key'] = False
@@ -261,6 +262,8 @@ class Channels(PluginChannels):
                     else:
                         self.groups_other = group
 
+                    if type(self.groups_other) == list:
+                        self.groups_other = '|'.join(self.groups_other)
                     ch['groups_other'] = self.groups_other
                     ch['found'] = True
 
@@ -319,6 +322,8 @@ class Channels(PluginChannels):
                           'Origin' : ref_url[:-1],
                           'Connection' : 'Keep-Alive'
                           }
+            if type(self.groups_other) == list:
+                self.groups_other = ' | '.join(self.groups_other)
             channel = {
                 'id': uid,
                 'enabled': enabled,
