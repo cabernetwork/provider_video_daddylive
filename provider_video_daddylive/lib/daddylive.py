@@ -34,22 +34,28 @@ class DaddyLive(PluginObj):
         self.enable_instance(self.namespace, None)
         if self.config_obj.data[self.namespace.lower()]['epg-plugin'] == 'ALL':
             self.enable_instance('TVGuide', 'default')
-        self.unc_daddylive_dl25f = [b"" for i in range(4)]
+        self.unc_daddylive_dl25f = [b"" for i in range(6)]
         self.unc_daddylive_dl25f[1] = self.uncompress(translations.daddylive_dl25f_stream).encode()
         self.unc_daddylive_dl25f[2] = self.uncompress(translations.daddylive_dl25f_cast).encode()
         self.unc_daddylive_dl25f[3] = self.uncompress(translations.daddylive_dl25f_watch).encode()
-        self.unc_daddylive_dl21a = [b"" for i in range(4)]
+        self.unc_daddylive_dl25f[4] = self.uncompress(translations.daddylive_dl25f_player).encode()
+        self.unc_daddylive_dl25f[5] = self.uncompress(translations.daddylive_dl25f_casting).encode()
+        self.unc_daddylive_dl21a = [b"" for i in range(6)]
         self.unc_daddylive_dl21a[1] = self.uncompress(translations.daddylive_dl21a_stream).encode()
         self.unc_daddylive_dl21a[2] = self.uncompress(translations.daddylive_dl21a_cast).encode()
         self.unc_daddylive_dl21a[3] = self.uncompress(translations.daddylive_dl21a_watch).encode()
+        self.unc_daddylive_dl21a[4] = self.uncompress(translations.daddylive_dl21a_player).encode()
+        self.unc_daddylive_dl21a[5] = self.uncompress(translations.daddylive_dl21a_casting).encode()
         for inst in _plugin.instances:
             self.instances[inst] = DaddyLiveInstance(self, inst)
         self.unc_daddylive_base = self.uncompress(translations.daddylive_base)
         self.unc_daddylive_channels = self.uncompress(translations.daddylive_channels)
-        self.unc_daddylive_stream = ["" for i in range(4)]
+        self.unc_daddylive_stream = ["" for i in range(6)]
         self.unc_daddylive_stream[1] = self.uncompress(translations.daddylive_stream_stream)
         self.unc_daddylive_stream[2] = self.uncompress(translations.daddylive_stream_cast)
         self.unc_daddylive_stream[3] = self.uncompress(translations.daddylive_stream_watch)
+        self.unc_daddylive_stream[4] = self.uncompress(translations.daddylive_stream_player)
+        self.unc_daddylive_stream[5] = self.uncompress(translations.daddylive_stream_casting)
         self.unc_daddylive_dl22e = self.uncompress(translations.daddylive_dl22e)
         self.unc_daddylive_key_stream = self.uncompress(translations.daddylive_key_stream)
         self.unc_daddylive_key_url = self.uncompress(translations.daddylive_key_url)

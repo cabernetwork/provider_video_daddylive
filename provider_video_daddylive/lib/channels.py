@@ -72,13 +72,14 @@ class Channels(PluginChannels):
         self.search_url = re.compile(self.plugin_obj.unc_daddylive_dl21a[self.pnum])
         url = self.plugin_obj.unc_daddylive_base + \
             self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)
-        text = self.get_uri_data(url, 2)
-        
+        header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                  'Referer': url,
+                  }
+        text = self.get_uri_data(url, 2, header)
         if not text:
-            self.logger.info('{}: {} 1 Unable to obtain url, aborting'
+            self.logger.info('{}: 1 Unable to obtain url for channel {}, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
-
 
         player_ch = re.compile(b'role="button">Player ([0-9])</button>')
         m=re.findall(player_ch, text)
@@ -89,34 +90,86 @@ class Channels(PluginChannels):
         else:
             self.groups_other = None
 
-        m = re.search(self.search_url, text)
-        if not m:
-            # unable to obtain the url, abort
-            self.logger.info('{}: {} 2 Unable to obtain url, aborting'
-                             .format(self.plugin_obj.name, _channel_id))
-            return
-
-        if self.pnum > 2:
-            ch_url = m[2].decode('utf8')
-        else:
-            ch_url = m[1].decode('utf8')
-        parsed_url = urllib.parse.urlsplit(ch_url)
-        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
-
-        # update header in db if changed
         data = self.db.get_channel(_channel_id, self.plugin_obj.name, self.instance_key)
         if data:
             ch_json = data['json']
-            h = ch_json['Header']
-            if h:
-                r = h['Referer']
-                if ref_url != r:
-                    ch_json['Header']['Referer'] = ref_url
-                    ch_json['Header']['Origin'] = ref_url[:-1]
-                    ch_json['ref_url'] = ref_url
-                    self.db.update_channel_json(ch_json, self.plugin_obj.name, self.instance_key)
-                    self.logger.notice('{}: Player changed for channel {}.  Data has been reset, recommend restarting stream'.format(self.plugin_obj.name, _channel_id))
+        else:
+            ch_json = None
+        m = re.search(self.search_url, text)
+
+        if not m:
+            # unable to obtain the url, try using the previous ref url
+            self.logger.info('{}: 2 Unable to obtain url for channel {} from provider'
+                             .format(self.plugin_obj.name, _channel_id))
+
+            if ch_json and ch_json.get('channel_ref'):
+                ch_url = ch_json['channel_ref'].get(str(self.pnum))
+                if ch_url:
+                    self.logger.debug('Reusing reference url previously {}'.format(ch_url))
+                    json_updated = self.update_header(ch_json, ch_url)
+                    if json_updated:
+                        self.db.update_channel_json(ch_json, self.plugin_obj.name, self.instance_key)
+                    return ch_url
+                else:
+                    self.logger.notice('1 Unable to obtain url from provider, aborting')
+            else:
+                self.logger.notice('2 Unable to obtain url from provider, aborting')
+            return
+
+        ch_url = m[2].decode('utf8')
+
+        if self.pnum > 3:
+            header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                      'Referer': 'https://daddylive.dad/',
+                      'Connection' : 'Keep-Alive'
+                      }
+            text = self.get_uri_data(ch_url, 2, header)
+            try:
+                c_url2=re.search(b'iframe src="([^"]+)', text)[1].decode('utf8')
+            except TypeError as ex:
+                self.logger.notice('{} Player {} not available for Channel {}, aborting' \
+                    .format(self.plugin_obj.name, self.pnum, _channel_id))
+                return
+            ch_url = c_url2
+        
+        json_updated = self.update_header(ch_json, ch_url)
+
+        if ch_json:
+            ch_ref = ch_json.get('channel_ref')
+            if not ch_ref:
+                self.logger.debug('1 Adding channel ref to db for player {}'.format(self.pnum))
+                ch_json.update({'channel_ref': {str(self.pnum): ch_url}})
+                json_updated = True
+            elif ch_ref.get(str(self.pnum)):
+                # channel_ref present, if the same, ignore otherwise update db
+                if ch_ref.get(str(self.pnum)) != ch_url:
+                    ch_json['channel_ref'][str(self.pnum)] = ch_url
+                    json_updated = True
+            else:
+                # pnum for ref not present, save data to db
+                self.logger.debug('2 Adding channel ref to db for player {}'.format(self.pnum))
+                ch_json['channel_ref'].update({str(self.pnum): ch_url})
+                json_updated = True
+            if json_updated:
+                self.db.update_channel_json(ch_json, self.plugin_obj.name, self.instance_key)
         return ch_url
+
+    def update_header(self, _ch_json, _ch_url):
+        # return the updated json (by reference) and return if it changed.
+        json_updated = False
+        parsed_url = urllib.parse.urlsplit(_ch_url)
+        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+        if _ch_json:
+            h = _ch_json.get('Header')
+            if h:
+                r = h.get('Referer')
+                if ref_url != r:
+                    _ch_json['Header']['Referer'] = ref_url
+                    _ch_json['Header']['Origin'] = ref_url[:-1]
+                    _ch_json['ref_url'] = ref_url
+                    json_updated = True
+                    self.logger.notice('{}: Player changed for channel {}.  Data has been reset'.format(self.plugin_obj.name, _ch_json['id']))
+        return json_updated
 
     @handle_url_except(timeout=10.0)
     @handle_json_except
@@ -134,7 +187,7 @@ class Channels(PluginChannels):
             'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)}
         text = self.get_uri_data(ch_url, 2, _header=header)
         if text is None:
-            self.logger.notice('{}: {} #1 Unable to obtain m3u8, possible no player num found for channel, aborting'
+            self.logger.notice('{}: {} #1 Unable to obtain m3u8, possible player num not available for channel, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
 
@@ -198,6 +251,7 @@ class Channels(PluginChannels):
             if name.lower().startswith('the '):
                 name = name[4:]
             group = None
+            channel_ref = None
 
             ch = [d for d in tvg_list if d['name'] == name]
             if len(ch):
@@ -229,10 +283,10 @@ class Channels(PluginChannels):
                     if ch['enabled']:
                         ref_url = self.get_channel_ref(uid)
                         if not ref_url:
-                            self.logger.notice('{} BAD CHANNEL found, skipping {}:{}'
+                            self.logger.notice('{} BAD CHANNEL found, disabling {}:{}'
                                                .format(self.plugin_obj.name, uid, name))
                             header = None
-                            continue
+                            ch['enabled'] = 0
                         else:
                             parsed_url = urllib.parse.urlsplit(ref_url)
                             origin_url = parsed_url.scheme + '://' + parsed_url.netloc
@@ -242,6 +296,12 @@ class Channels(PluginChannels):
                                       'Origin' : origin_url,
                                       'Connection' : 'Keep-Alive'
                                       }
+                            data = self.db.get_channel(uid, self.plugin_obj.name, self.instance_key)
+                            if data:
+                                ch_json = data['json']
+                                channel_ref = ch_json.get('channel_ref')
+                                if channel_ref:
+                                    ch['channel_ref'] = channel_ref
                     elif ch.get('Header'):
                         header = ch['Header']
                         ref_url = ch['ref_url']
@@ -286,7 +346,10 @@ class Channels(PluginChannels):
 
             ch_db_data = self.ch_db_list.get(uid)
             if ch_db_data is not None:
-                enabled = ch_db_data[0]['enabled']
+                if ch:
+                    enabled = ch['enabled']
+                else:
+                    enabled = ch_db_data[0]['enabled']
                 display_name = ch_db_data[0]['display_name']
                 hd = ch_db_data[0]['json']['HD']
                 thumb = ch_db_data[0]['json']['thumbnail']
@@ -305,7 +368,14 @@ class Channels(PluginChannels):
                 self.logger.info('{}:{} 2 New Channel Added {}:{}'
                     .format(self.plugin_obj.name, self.instance_key, uid, name))
                 display_name = name
-                enabled = True
+                if ch:
+                    enabled = ch['enabled']
+                else:
+                    enabled = True
+                    ref_url = self.get_channel_ref(uid)
+                    if ref_url:
+                        parsed_url = urllib.parse.urlsplit(ref_url)
+                        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
                 hd = 0
                 thumb = None
                 thumb_size = None
@@ -313,6 +383,11 @@ class Channels(PluginChannels):
                 if ref_url:
                     parsed_url = urllib.parse.urlsplit(ref_url)
                     ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+
+            data = self.db.get_channel(uid, self.plugin_obj.name, self.instance_key)
+            if data:
+                ch_json = data['json']
+                channel_ref = ch_json.get('channel_ref')
 
             if not ref_url:
                 header = None
@@ -341,6 +416,7 @@ class Channels(PluginChannels):
                 'Header': header,
                 'ref_url': ref_url,
                 'use_date_on_m3u8_key': False,
+                'channel_ref': channel_ref,
             }
             results.append(channel)
 
@@ -373,19 +449,19 @@ class Channels(PluginChannels):
         c_key = re.search(b'(?s) channelKey = \"([^"]*)', _text)
         if not c_key:
             # unable to obtain the url, abort
-            self.logger.notice('{}: {} #2 Unable to obtain m3u8, possible no player num found for channel, aborting'
+            self.logger.notice('{}: #2 Unable to obtain m3u8, possible player num not available for channel {}, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
         c_key = c_key[1].decode('utf8')
 
-        a_sig = re.search(b'(?s) authSig\s*= \"([^"]*)', _text)[1].decode('utf8')
+        a_sig = re.search(b'(?s) authSig\\s*= \\"([^"]*)', _text)[1].decode('utf8')
         a_sig = urllib.parse.quote_plus(a_sig)
-        a_rnd = re.search(b'(?s) authRnd\s*= \"([^"]*)', _text)[1].decode('utf8')
-        a_ts = re.search(b'(?s) authTs\s*= \"([^"]*)', _text)[1].decode('utf8')
-        a_host = re.search(b'\}\s*fetchWithRetry\(\s*\'([^\']*)', _text)[1].decode('utf8')
+        a_rnd = re.search(b'(?s) authRnd\\s*= \\"([^"]*)', _text)[1].decode('utf8')
+        a_ts = re.search(b'(?s) authTs\\s*= \\"([^"]*)', _text)[1].decode('utf8')
+        a_host = re.search(b'\\}\\s*fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         a_url = f'{a_host}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
         host = re.search(b'(?s)m3u8 =.*?:.*?:.*?".*?".*?"([^"]*)', _text)[1].decode('utf8')
-        key_q = re.search(b'n fetchWithRetry\(\s*\'([^\']*)', _text)[1].decode('utf8')
+        key_q = re.search(b'n fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
 
         auth = self.get_uri_data(a_url, 2, _header)
