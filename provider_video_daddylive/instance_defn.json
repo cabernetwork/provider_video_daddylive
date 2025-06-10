@@ -71,6 +71,13 @@
                         "level": 2,
                         "help": "Default: 1. Maps to the DL player number.  Not all channels have multiple players."
                     },
+                    "player-disable_bad_channels":{
+                        "label": "Disable Bad Channels",
+                        "type": "boolean",
+                        "default": true,
+                        "level": 2,
+                        "help": "Default: True. During a channel list scan, if the plugin cannot obtain the basic urls from DL website needed to obtain the m3u8 url, then the channel is disabled.  This helps in finding only those channels that the plugin might be able to play for a specific player."
+                    },
                     "player-stream_quality":{
                         "label": "Maximum Stream Quality",
                         "type": "integer",

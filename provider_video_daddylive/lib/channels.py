@@ -286,7 +286,8 @@ class Channels(PluginChannels):
                             self.logger.notice('{} BAD CHANNEL found, disabling {}:{}'
                                                .format(self.plugin_obj.name, uid, name))
                             header = None
-                            ch['enabled'] = 0
+                            if self.config_obj.data[self.config_section]['player-disable_bad_channels']:
+                                ch['enabled'] = 0
                         else:
                             parsed_url = urllib.parse.urlsplit(ref_url)
                             origin_url = parsed_url.scheme + '://' + parsed_url.netloc
@@ -371,7 +372,7 @@ class Channels(PluginChannels):
                 if ch:
                     enabled = ch['enabled']
                 else:
-                    enabled = True
+                    enabled = 1
                     ref_url = self.get_channel_ref(uid)
                     if ref_url:
                         parsed_url = urllib.parse.urlsplit(ref_url)

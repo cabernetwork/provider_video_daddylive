@@ -63,14 +63,6 @@
                         "level": 2,
                         "help": "Default: false. If true, then the HTTP session will span requests.  If false, will create a new HTTP session for each request."
                     },
-                    "stream-m3u8_host":{
-                        "label": "M3U8 Host",
-                        "type": "string",
-                        "default": "new.newkso.ru",
-                        "level": 2,
-                        "writable": true,
-                        "help": "DL hostname used to get the m3u8 file"
-                    },
                     "stream-g_stream_timeout":{
                         "label": "Stream Timeout",
                         "type": "integer",
