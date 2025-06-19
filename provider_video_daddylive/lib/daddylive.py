@@ -48,7 +48,8 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_dl21a[5] = self.uncompress(translations.daddylive_dl21a_casting).encode()
         for inst in _plugin.instances:
             self.instances[inst] = DaddyLiveInstance(self, inst)
-        self.unc_daddylive_base = self.uncompress(translations.daddylive_base)
+        self.unc_daddylive_base = self.uncompress(translations.daddylive_base) \
+            .format(self.config_obj.data[self.namespace.lower()]['daddylive_host'])
         self.unc_daddylive_channels = self.uncompress(translations.daddylive_channels)
         self.unc_daddylive_stream = ["" for i in range(6)]
         self.unc_daddylive_stream[1] = self.uncompress(translations.daddylive_stream_stream)

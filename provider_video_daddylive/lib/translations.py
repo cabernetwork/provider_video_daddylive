@@ -18,7 +18,7 @@ substantial portions of the Software.
 """
 
 
-daddylive_base = 'gfpMXf5BjIUokbpo0bL/zZhFtxdojG=='
+daddylive_base = 'gfpMXf5BjIUT1qH='
 daddylive_channels = '56nPlIC6gxdFyZrEXISGgfW='
 daddylive_dl21a_stream = 'gbtIkbC7vweV24L/t8i3ybh/jYoAXRi6uq2+bCJYsqE/2Ye+uI9HgbtIkbC7vqJ/vZ37gbz+zcMYl4WG2e=='
 daddylive_dl21a_cast = 'gbtIkbC7vweV24L/t8i3ybh/jYoAXRi6uq2+bCJYsqE/2Ye+uI9HgbtIkbC7vqJ/vZ37gbz+zcMYl4WG2e=='

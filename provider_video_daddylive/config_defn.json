@@ -42,6 +42,13 @@
                         "onInit": "lib.config.config_callbacks.set_hdhomerun_id",
                         "help": "Unique HDHomerun CRC-based hex code for this plugin"
                     },
+                    "daddylive_host":{
+                        "label": "DaddyLive Hostname",
+                        "type": "string",
+                        "default": "thedaddy.click",
+                        "level": 1,
+                        "help": "Hostname for the DaddyLive website"
+                    },
                     "player-tuner_count":{
                         "label": "tuner_count",
                         "type": "integer",
