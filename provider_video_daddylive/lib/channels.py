@@ -454,18 +454,20 @@ class Channels(PluginChannels):
                                .format(self.plugin_obj.name, _channel_id))
             return
         c_key = c_key[1].decode('utf8')
-
-        a_sig = re.search(b'(?s) authSig\\s*= \\"([^"]*)', _text)[1].decode('utf8')
-        a_sig = urllib.parse.quote_plus(a_sig)
-        a_rnd = re.search(b'(?s) authRnd\\s*= \\"([^"]*)', _text)[1].decode('utf8')
-        a_ts = re.search(b'(?s) authTs\\s*= \\"([^"]*)', _text)[1].decode('utf8')
-        a_host = re.search(b'\\}\\s*fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
-        a_url = f'{a_host}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
-        host = re.search(b'(?s)m3u8 =.*?:.*?:.*?".*?".*?"([^"]*)', _text)[1].decode('utf8')
         key_q = re.search(b'n fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
+        host = re.search(b'(?s)m3u8 =.*?:.*?:.*?".*?".*?"([^"]*)', _text)[1].decode('utf8')
+        try:
+            a_sig = re.search(b'(?s) authSig\\s*= \\"([^"]*)', _text)[1].decode('utf8')
+            a_sig = urllib.parse.quote_plus(a_sig)
+            a_rnd = re.search(b'(?s) authRnd\\s*= \\"([^"]*)', _text)[1].decode('utf8')
+            a_ts = re.search(b'(?s) authTs\\s*= \\"([^"]*)', _text)[1].decode('utf8')
+            a_host = re.search(b'\\}\\s*fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
+            a_url = f'{a_host}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
+            auth = self.get_uri_data(a_url, 2, _header)
+        except TypeError:
+            self.logger.notice('Unable to obtain auth keys, skipping')
 
-        auth = self.get_uri_data(a_url, 2, _header)
         header = {
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': _ch_url}
