@@ -457,14 +457,22 @@ class Channels(PluginChannels):
         key_q = re.search(b'n fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
         host = re.search(b'(?s)m3u8 =.*?:.*?:.*?".*?".*?"([^"]*)', _text)[1].decode('utf8')
+
         try:
-            a_sig = re.search(b'(?s) authSig\\s*= \\"([^"]*)', _text)[1].decode('utf8')
-            a_sig = urllib.parse.quote_plus(a_sig)
-            a_rnd = re.search(b'(?s) authRnd\\s*= \\"([^"]*)', _text)[1].decode('utf8')
-            a_ts = re.search(b'(?s) authTs\\s*= \\"([^"]*)', _text)[1].decode('utf8')
-            a_host = re.search(b'\\}\\s*fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
-            a_url = f'{a_host}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
+            a_sig = re.search(b'(?s)var __e = atob\\(\\"([^"]*)', _text)[1]
+            a_sig = base64.b64decode(a_sig).decode('utf8')
+            a_rnd = re.search(b'(?s)var __d = atob\\(\\"([^"]*)', _text)[1]
+            a_rnd = base64.b64decode(a_rnd).decode('utf8')
+            a_ts = re.search(b'(?s)var __c = atob\\(\\"([^"]*)', _text)[1]
+            a_ts = base64.b64decode(a_ts).decode('utf8')
+            a_host = re.search(b'(?s)var __a = atob\\(\\"([^"]*)', _text)[1]
+            a_host = base64.b64decode(a_host).decode('utf8')
+            a_auth = re.search(b'(?s)var __b = atob\\(\\"([^"]*)', _text)[1]
+            a_auth = base64.b64decode(a_auth).decode('utf8')
+
+            a_url = f'{a_host}{a_auth}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
             auth = self.get_uri_data(a_url, 2, _header)
+            #self.logger.warning('AUTHURL= {}  RESULT= {}'.format(a_url, auth))
         except TypeError:
             self.logger.notice('Unable to obtain auth keys, skipping')
 
