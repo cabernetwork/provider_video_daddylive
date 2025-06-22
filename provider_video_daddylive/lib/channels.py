@@ -470,7 +470,7 @@ class Channels(PluginChannels):
             a_auth = re.search(b'(?s)var __b = atob\\(\\"([^"]*)', _text)[1]
             a_auth = base64.b64decode(a_auth).decode('utf8')
 
-            a_url = f'{a_host}{a_auth}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
+            a_url = f'{a_host}{a_auth}?channel_id={c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
 
             parsed_url = urllib.parse.urlsplit(_ch_url)
             ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
@@ -479,7 +479,7 @@ class Channels(PluginChannels):
                 'Referer': ref_url,
                 'Origin': ref_url[:-1]}
             auth = self.get_uri_data(a_url, 2, header)
-            #self.logger.warning('AUTHURL= {}  HEADER= {}  RESULT= {}'.format(a_url, header, auth))
+            self.logger.trace('AUTHURL= {}  HEADER= {}  RESULT= {}'.format(a_url, header, auth))
         except TypeError:
             self.logger.notice('Unable to obtain auth keys, skipping')
             x = re.search(b'(?s)var player(.{150})', _text)
