@@ -120,7 +120,7 @@ class Channels(PluginChannels):
 
         if self.pnum > 3:
             header = {'User-agent': utils.DEFAULT_USER_AGENT,
-                      'Referer': 'https://daddylive.dad/',
+                      'Referer': self.plugin_obj.unc_daddylive_base,
                       'Connection' : 'Keep-Alive'
                       }
             text = self.get_uri_data(ch_url, 2, header)
@@ -471,14 +471,25 @@ class Channels(PluginChannels):
             a_auth = base64.b64decode(a_auth).decode('utf8')
 
             a_url = f'{a_host}{a_auth}{c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
-            auth = self.get_uri_data(a_url, 2, _header)
-            #self.logger.warning('AUTHURL= {}  RESULT= {}'.format(a_url, auth))
+
+            parsed_url = urllib.parse.urlsplit(_ch_url)
+            ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+            header = {
+                'User-agent': utils.DEFAULT_USER_AGENT,
+                'Referer': ref_url,
+                'Origin': ref_url[:-1]}
+            auth = self.get_uri_data(a_url, 2, header)
+            #self.logger.warning('AUTHURL= {}  HEADER= {}  RESULT= {}'.format(a_url, header, auth))
         except TypeError:
             self.logger.notice('Unable to obtain auth keys, skipping')
+            x = re.search(b'(?s)var player(.{150})', _text)
+            if x:
+                self.logger.debug('keys: {}'.format(x[1]))
 
         header = {
             'User-agent': utils.DEFAULT_USER_AGENT,
             'Referer': _ch_url}
+
         text = self.get_uri_data(key_url, 2, header)
         m = re.search(b':"([^"]*)', text)
         try:
