@@ -29,9 +29,13 @@ class DaddyLive(PluginObj):
 
     def __init__(self, _plugin, _plugins):
         super().__init__(_plugin)
+        b = 'player-tuner_count'
         self.plugins = _plugins
         # create an instance is none are present
         self.enable_instance(self.namespace, None)
+        count = self.config_obj.data[self.namespace.lower()][b]
+        if count > 4:
+            self.config_obj.data[self.namespace.lower()][b] = 1
         if self.config_obj.data[self.namespace.lower()]['epg-plugin'] == 'ALL':
             self.enable_instance('TVGuide', 'default')
         self.unc_daddylive_dl25f = [b"" for i in range(6)]

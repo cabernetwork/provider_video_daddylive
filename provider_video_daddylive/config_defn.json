@@ -52,9 +52,9 @@
                     "player-tuner_count":{
                         "label": "tuner_count",
                         "type": "integer",
-                        "default": 10,
-                        "level": 2,
-                        "help": "Default: 10. Number of streams active at one time"
+                        "default": 4,
+                        "level": 3,
+                        "help": "Default: 4. Number of streams active at one time"
                     },
                     "player-send_atsc_keepalive":{
                         "label": "Send ATSC Keep-Alive",
