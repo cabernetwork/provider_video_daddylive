@@ -64,8 +64,6 @@ class DaddyLive(PluginObj):
         self.unc_daddylive_dl22e = self.uncompress(translations.daddylive_dl22e)
         self.unc_daddylive_key_stream = self.uncompress(translations.daddylive_key_stream)
         self.unc_daddylive_key_url = self.uncompress(translations.daddylive_key_url)
-        utils.DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'
-
 
     def scan_channels(self, _instance=None):
         """
