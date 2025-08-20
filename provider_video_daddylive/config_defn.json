@@ -45,7 +45,7 @@
                     "daddylive_host":{
                         "label": "DaddyLive Hostname",
                         "type": "string",
-                        "default": "thedaddy.click",
+                        "default": "thedaddy.top",
                         "level": 1,
                         "help": "Hostname for the DaddyLive website"
                     },

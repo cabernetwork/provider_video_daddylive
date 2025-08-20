@@ -190,7 +190,6 @@ class Channels(PluginChannels):
             self.logger.notice('{}: {} #1 Unable to obtain m3u8, possible player num not available for channel, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
-
         stream_url = self.find_m3u8(text, _channel_id, header, ch_url)
         if not stream_url:
             return
@@ -447,27 +446,36 @@ class Channels(PluginChannels):
 
     def find_m3u8(self, _text, _channel_id, _header, _ch_url):
 
-        c_key = re.search(b'(?s) channelKey = \"([^"]*)', _text)
+        parts = re.search(b'(?s) BUNDLE = \"([^"]*)', _text)
+        if not parts:
+            # unable to obtain the url, abort
+            self.logger.notice('{}: #2 Unable to obtain m3u8, possible player num not available for channel {}, aborting'
+                               .format(self.plugin_obj.name, _channel_id))
+            return
+        parts = base64.b64decode(parts[1]).decode('utf-8')
+        
+        c_key = re.search(b'(?s) CHANNEL_KEY = \"([^"]*)', _text)
         if not c_key:
             # unable to obtain the url, abort
             self.logger.notice('{}: #2 Unable to obtain m3u8, possible player num not available for channel {}, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
         c_key = c_key[1].decode('utf8')
-        key_q = re.search(b'n fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
+
+        key_q = re.search(b'fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
-        host = re.search(b'(?s)m3u8 =.*?:.*?:.*?".*?".*?"([^"]*)', _text)[1].decode('utf8')
+        host = re.search(b'(?s)m3u8 =.*?`.*?`.*?`.*?}([^$]*)', _text)[1].decode('utf8')
 
         try:
-            a_sig = re.search(b'(?s)var __e = atob\\(\\"([^"]*)', _text)[1]
+            a_sig = re.search(b'(?s)sig\\":\\"([^"]*)', _text)[1]
             a_sig = base64.b64decode(a_sig).decode('utf8')
-            a_rnd = re.search(b'(?s)var __d = atob\\(\\"([^"]*)', _text)[1]
+            a_rnd = re.search(b'(?s)rnd\\":\\"([^"]*)', _text)[1]
             a_rnd = base64.b64decode(a_rnd).decode('utf8')
-            a_ts = re.search(b'(?s)var __c = atob\\(\\"([^"]*)', _text)[1]
+            a_ts = re.search(b'(?s)ts\\":\\"([^"]*)', _text)[1]
             a_ts = base64.b64decode(a_ts).decode('utf8')
-            a_host = re.search(b'(?s)var __a = atob\\(\\"([^"]*)', _text)[1]
+            a_host = re.search(b'(?s)host\\":\\"([^"]*)', _text)[1]
             a_host = base64.b64decode(a_host).decode('utf8')
-            a_auth = re.search(b'(?s)var __b = atob\\(\\"([^"]*)', _text)[1]
+            a_auth = re.search(b'(?s)script\\":\\"([^"]*)', _text)[1]
             a_auth = base64.b64decode(a_auth).decode('utf8')
 
             a_url = f'{a_host}{a_auth}?channel_id={c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
