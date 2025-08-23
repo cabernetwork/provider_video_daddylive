@@ -467,15 +467,15 @@ class Channels(PluginChannels):
         host = re.search(b'(?s)m3u8 =.*?`.*?`.*?`.*?}([^$]*)', _text)[1].decode('utf8')
 
         try:
-            a_sig = re.search(b'(?s)sig\\":\\"([^"]*)', _text)[1]
+            a_sig = re.search('(?s)sig\\":\\"([^"]*)', parts)[1]
             a_sig = base64.b64decode(a_sig).decode('utf8')
-            a_rnd = re.search(b'(?s)rnd\\":\\"([^"]*)', _text)[1]
+            a_rnd = re.search('(?s)rnd\\":\\"([^"]*)', parts)[1]
             a_rnd = base64.b64decode(a_rnd).decode('utf8')
-            a_ts = re.search(b'(?s)ts\\":\\"([^"]*)', _text)[1]
+            a_ts = re.search('(?s)ts\\":\\"([^"]*)', parts)[1]
             a_ts = base64.b64decode(a_ts).decode('utf8')
-            a_host = re.search(b'(?s)host\\":\\"([^"]*)', _text)[1]
+            a_host = re.search('(?s)host\\":\\"([^"]*)', parts)[1]
             a_host = base64.b64decode(a_host).decode('utf8')
-            a_auth = re.search(b'(?s)script\\":\\"([^"]*)', _text)[1]
+            a_auth = re.search('(?s)script\\":\\"([^"]*)', parts)[1]
             a_auth = base64.b64decode(a_auth).decode('utf8')
 
             a_url = f'{a_host}{a_auth}?channel_id={c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
