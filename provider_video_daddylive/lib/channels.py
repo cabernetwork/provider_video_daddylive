@@ -446,25 +446,38 @@ class Channels(PluginChannels):
 
     def find_m3u8(self, _text, _channel_id, _header, _ch_url):
 
-        parts = re.search(b'(?s) BUNDLE = \"([^"]*)', _text)
-        if not parts:
-            # unable to obtain the url, abort
-            self.logger.notice('{}: #2 Unable to obtain m3u8, possible player num not available for channel {}, aborting'
-                               .format(self.plugin_obj.name, _channel_id))
-            return
-        parts = base64.b64decode(parts[1]).decode('utf-8')
-        
-        c_key = re.search(b'(?s) CHANNEL_KEY = \"([^"]*)', _text)
+        c_key = re.search(b'(?s)const\s+CHANNEL_KEY\s*=\s*\"([^"]*)', _text)
         if not c_key:
             # unable to obtain the url, abort
-            self.logger.notice('{}: #2 Unable to obtain m3u8, possible player num not available for channel {}, aborting'
+            self.logger.notice('{}: #2 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
                                .format(self.plugin_obj.name, _channel_id))
             return
         c_key = c_key[1].decode('utf8')
 
         key_q = re.search(b'fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
-        host = re.search(b'(?s)m3u8 =.*?`.*?`.*?`.*?}([^$]*)', _text)[1].decode('utf8')
+
+        parts = re.search(b'(?s)const\s+XJZ\s*=\s*\"([^"]*)', _text)
+        if not parts:
+            # unable to obtain the url, abort
+            self.logger.notice('{}: #3 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
+                               .format(self.plugin_obj.name, _channel_id))
+            return
+        parts = base64.b64decode(parts[1]).decode('utf-8')
+        
+
+        host_array = re.search(b'host\s*=\s*\[([^\]]+)\]', _text)
+        if not host_array:
+            # unable to obtain the url, abort
+            self.logger.notice('{}: #4 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
+                               .format(self.plugin_obj.name, _channel_id))
+            return
+        host_parts = [i.strip().strip("'\"") for i in host_array.group(1).decode('utf-8').split(',')]
+        host = ''.join(host_parts)
+
+        # Uint8Array([40,60,61,33,103,57,33,57])
+        bhex = [40, 60, 61, 33, 103, 57, 33, 57]
+        s = ''.join(chr(b ^ 73) for b in bhex)
 
         try:
             a_sig = re.search('(?s)sig\\":\\"([^"]*)', parts)[1]
@@ -477,6 +490,7 @@ class Channels(PluginChannels):
             a_host = base64.b64decode(a_host).decode('utf8')
             a_auth = re.search('(?s)script\\":\\"([^"]*)', parts)[1]
             a_auth = base64.b64decode(a_auth).decode('utf8')
+            a_auth = 'auth.php'
 
             a_url = f'{a_host}{a_auth}?channel_id={c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
 
@@ -499,15 +513,19 @@ class Channels(PluginChannels):
             'Referer': _ch_url}
 
         text = self.get_uri_data(key_url, 2, header)
+        
         m = re.search(b':"([^"]*)', text)
         try:
             s_key = m[1].decode('utf8')
         except TypeError:
-            self.logger.warning('{}: Section key for uid {} is not available, aborting'.format(self.plugin_obj.name, _channel_id))
+            self.logger.warning('{}: Server key for uid {} is not available, aborting'.format(self.plugin_obj.name, _channel_id))
             return
         s_key = m[1].decode('utf8')
 
-        m3u8_url = 'https://{}{}{}/{}/mono.m3u8'.format(s_key, host, s_key, c_key)
+        if s_key == "top1/cdn":
+            m3u8_url = f"https://top1.newkso.ru/top1/cdn/{c_key}/mono.m3u8"
+        else:
+            m3u8_url = 'https://{}new.newkso.ru/{}/{}/mono.m3u8'.format(s_key, s_key, c_key)
         return m3u8_url
 
     GLOBAL_A = ""
