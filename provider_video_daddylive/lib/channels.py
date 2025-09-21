@@ -51,7 +51,7 @@ class Channels(PluginChannels):
 
         ch_list = self.get_channel_list()
         if ch_list is None or len(ch_list) == 0:
-            self.logger.warning('DaddyLive channel list is empty from provider, not updating Cabernet')
+            self.logger.notice('DaddyLive channel list is empty from provider, not updating Cabernet')
             return
         self.logger.info("{}: Found {} stations on instance {}"
                          .format(self.plugin_obj.name, len(ch_list), self.instance_key))
@@ -75,13 +75,14 @@ class Channels(PluginChannels):
         header = {'User-agent': utils.DEFAULT_USER_AGENT,
                   'Referer': url,
                   }
+
         text = self.get_uri_data(url, 2, header)
         if not text:
             self.logger.info('{}: 1 Unable to obtain url for channel {}, aborting'
                              .format(self.plugin_obj.name, _channel_id))
             return
 
-        player_ch = re.compile(b'role="button">Player ([0-9])</button>')
+        player_ch = re.compile(b'\\">Player ([0-9])</button>')
         m=re.findall(player_ch, text)
         if m:
             self.groups_other = ['']
@@ -96,7 +97,6 @@ class Channels(PluginChannels):
         else:
             ch_json = None
         m = re.search(self.search_url, text)
-
         if not m:
             # unable to obtain the url, try using the previous ref url
             self.logger.info('{}: 2 Unable to obtain url for channel {} from provider'
@@ -116,22 +116,19 @@ class Channels(PluginChannels):
                 self.logger.notice('2 Unable to obtain url from provider, aborting')
             return
 
-        ch_url = m[2].decode('utf8')
-
-        if self.pnum > 3:
-            header = {'User-agent': utils.DEFAULT_USER_AGENT,
-                      'Referer': self.plugin_obj.unc_daddylive_base,
-                      'Connection' : 'Keep-Alive'
-                      }
-            text = self.get_uri_data(ch_url, 2, header)
-            try:
-                c_url2=re.search(b'iframe src="([^"]+)', text)[1].decode('utf8')
-            except TypeError as ex:
-                self.logger.notice('{} Player {} not available for Channel {}, aborting' \
-                    .format(self.plugin_obj.name, self.pnum, _channel_id))
-                return
-            ch_url = c_url2
-        
+        ch_url = m[1].decode('utf8')
+        header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                  'Referer': self.plugin_obj.unc_daddylive_base,
+                  'Connection' : 'Keep-Alive'
+                  }
+        text = self.get_uri_data(ch_url, 2, header)
+        try:
+            c_url2=re.search(b'iframe src="([^"]+)', text)[1].decode('utf8')
+        except TypeError as ex:
+            self.logger.notice('{} Player {} not available for Channel {}, aborting' \
+                .format(self.plugin_obj.name, self.pnum, _channel_id))
+            return
+        ch_url = c_url2        
         json_updated = self.update_header(ch_json, ch_url)
 
         if ch_json:
@@ -184,7 +181,8 @@ class Channels(PluginChannels):
 
         header = {
             'User-agent': utils.DEFAULT_USER_AGENT,
-            'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)}
+            #'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)}
+            'Referer': ch_url}
         text = self.get_uri_data(ch_url, 2, _header=header)
         if text is None:
             self.logger.notice('{}: {} #1 Unable to obtain m3u8, possible player num not available for channel, aborting'
@@ -446,7 +444,7 @@ class Channels(PluginChannels):
 
     def find_m3u8(self, _text, _channel_id, _header, _ch_url):
 
-        c_key = re.search(b'(?s)const\s+CHANNEL_KEY\s*=\s*\"([^"]*)', _text)
+        c_key = re.search(b'(?s)const\\s+CHANNEL_KEY\\s*=\\s*\\"([^"]+)\\"', _text)
         if not c_key:
             # unable to obtain the url, abort
             self.logger.notice('{}: #2 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
@@ -457,7 +455,7 @@ class Channels(PluginChannels):
         key_q = re.search(b'fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
 
-        parts = re.search(b'(?s)const\s+XJZ\s*=\s*\"([^"]*)', _text)
+        parts = re.search(b'(?s)const\\s+XJZ\\s*=\\s*\\"([^"]+)\\"', _text)
         if not parts:
             # unable to obtain the url, abort
             self.logger.notice('{}: #3 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
@@ -466,7 +464,7 @@ class Channels(PluginChannels):
         parts = base64.b64decode(parts[1]).decode('utf-8')
         
 
-        host_array = re.search(b'host\s*=\s*\[([^\]]+)\]', _text)
+        host_array = re.search(b'host\\s*=\\s*\\[([^\]]+)\\]', _text)
         if not host_array:
             # unable to obtain the url, abort
             self.logger.notice('{}: #4 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
