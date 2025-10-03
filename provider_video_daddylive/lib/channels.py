@@ -455,7 +455,7 @@ class Channels(PluginChannels):
         key_q = re.search(b'fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
         key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
 
-        parts = re.search(b'(?s)const\\s+XJZ\\s*=\\s*\\"([^"]+)\\"', _text)
+        parts = re.search(b'(?s)const\\s+XKZK\\s*=\\s*\\"([^"]+)\\"', _text)
         if not parts:
             # unable to obtain the url, abort
             self.logger.notice('{}: #3 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
