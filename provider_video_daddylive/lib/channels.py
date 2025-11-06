@@ -41,8 +41,12 @@ class Channels(PluginChannels):
         self.pnum = self.config_obj.data[self.config_section]['player-number']
         self.search_url = None
         self.search_m3u8 = None
-        self.search_ch = re.compile(r'div class="grid-item">'
-                                    + r'<a href=\"(\D+(\d+).php.*?)\" target.*?<strong>(.*?)</strong>')
+        self.search_ch = re.compile(
+            b'<a\s+class="card"[^>]*?href="([^"]+)"[^>]*?data-title="[^"]*"[^>]*>'
+            b'.*?<div\s+class="card__title">\s*(.*?)\s*<\/div>.*?ID:\s*(\d+)\s*<\/div>'
+            b'.*?<\/a>',
+            re.IGNORECASE | re.DOTALL
+        )
         self.groups_other = None
         self.ch_db_list = None
 
@@ -70,8 +74,9 @@ class Channels(PluginChannels):
         """
         self.pnum = self.config_obj.data[self.config_section]['player-number']
         self.search_url = re.compile(self.plugin_obj.unc_daddylive_dl21a[self.pnum])
+
         url = self.plugin_obj.unc_daddylive_base + \
-            self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)
+            'watch.php?id={}'.format(_channel_id)
         header = {'User-agent': utils.DEFAULT_USER_AGENT,
                   'Referer': url,
                   }
@@ -82,6 +87,7 @@ class Channels(PluginChannels):
                              .format(self.plugin_obj.name, _channel_id))
             return
 
+        # this text contains the Player info
         player_ch = re.compile(b'\\">Player ([0-9])</button>')
         m=re.findall(player_ch, text)
         if m:
@@ -91,13 +97,26 @@ class Channels(PluginChannels):
         else:
             self.groups_other = None
 
+        url2 = self.plugin_obj.unc_daddylive_base + \
+            'cast/stream-{}.php'.format(_channel_id)
+        header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                  'Referer': url,
+                  }
+        text2 = self.get_uri_data(url2, 2, header)
         data = self.db.get_channel(_channel_id, self.plugin_obj.name, self.instance_key)
         if data:
             ch_json = data['json']
         else:
             ch_json = None
-        m = re.search(self.search_url, text)
-        if not m:
+
+        url3_match = re.search(b'iframe src="([^"]*)', text2)
+        if not url3_match:
+            self.logger.notice('Player {} not available for {}'.format(self.pnum, _channel_id))
+            return
+
+        # url3 is the reference urls with full string...
+        url3_match = re.search(b'iframe src="([^"]*)', text2)
+        if not url3_match:
             # unable to obtain the url, try using the previous ref url
             self.logger.info('{}: 2 Unable to obtain url for channel {} from provider'
                              .format(self.plugin_obj.name, _channel_id))
@@ -116,19 +135,13 @@ class Channels(PluginChannels):
                 self.logger.notice('2 Unable to obtain url from provider, aborting')
             return
 
-        ch_url = m[1].decode('utf8')
+        ch_url = url3_match.group(1).decode('utf8')
         header = {'User-agent': utils.DEFAULT_USER_AGENT,
                   'Referer': self.plugin_obj.unc_daddylive_base,
                   'Connection' : 'Keep-Alive'
                   }
         text = self.get_uri_data(ch_url, 2, header)
-        try:
-            c_url2=re.search(b'iframe src="([^"]+)', text)[1].decode('utf8')
-        except TypeError as ex:
-            self.logger.notice('{} Player {} not available for Channel {}, aborting' \
-                .format(self.plugin_obj.name, self.pnum, _channel_id))
-            return
-        ch_url = c_url2        
+
         json_updated = self.update_header(ch_json, ch_url)
 
         if ch_json:
@@ -227,15 +240,8 @@ class Channels(PluginChannels):
         text = self.get_uri_data(uri, 2)
         if text is None:
             return
-        text = text.decode()
-        if text is None:
-            return
-        text = text.replace('\n', ' ')
-        text_list = re.findall(r'<label for="tab-([2-9]|[1-9][0-9])">(.*?)</center>\s*</div>\s*</div>', text)
-        text_combine = ''
-        for i in range(len(text_list)):
-            text_combine = text_combine + text_list[i][1]
-        match_list = re.findall(self.search_ch, text_combine)
+        match_list = re.findall(self.search_ch, text)
+
         # url, id, name
         for m in match_list:
             self.groups_other = None
@@ -243,8 +249,8 @@ class Channels(PluginChannels):
                 self.logger.warning(
                     'get_channel_list - DaddyLive channel extraction failed. Extraction procedure needs updating')
                 return None
-            uid = m[1]
-            name = html.unescape(m[2]).strip()
+            uid = m[2].decode('utf-8')
+            name = html.unescape(m[1].decode('utf-8')).strip()
             if name.lower().startswith('the '):
                 name = name[4:]
             group = None
@@ -278,15 +284,15 @@ class Channels(PluginChannels):
                         ch['thumbnail_size'] = self.get_thumbnail_size(ch['thumbnail'], 2, uid)
 
                     if ch['enabled']:
-                        ref_url = self.get_channel_ref(uid)
-                        if not ref_url:
+                        ref_url_full = self.get_channel_ref(uid)
+                        if not ref_url_full:
                             self.logger.notice('{} BAD CHANNEL found, disabling {}:{}'
                                                .format(self.plugin_obj.name, uid, name))
                             header = None
                             if self.config_obj.data[self.config_section]['player-disable_bad_channels']:
                                 ch['enabled'] = 0
                         else:
-                            parsed_url = urllib.parse.urlsplit(ref_url)
+                            parsed_url = urllib.parse.urlsplit(ref_url_full)
                             origin_url = parsed_url.scheme + '://' + parsed_url.netloc
                             ref_url = origin_url + '/'
                             header = {'User-agent': utils.DEFAULT_USER_AGENT,
@@ -356,12 +362,18 @@ class Channels(PluginChannels):
                 if not ch_db_data[0]['enabled']:
                     ref_url = ch_db_data[0]['json']['ref_url']
                 else:
-                    ref_url = self.get_channel_ref(uid)
-                    if ref_url:
-                        parsed_url = urllib.parse.urlsplit(ref_url)
+                    ref_url_full = self.get_channel_ref(uid)
+                    if ref_url_full:
+                        parsed_url = urllib.parse.urlsplit(ref_url_full)
                         ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
-                        self.logger.info('{}:{} 2 Updating Channel {}:{}'
-                            .format(self.plugin_obj.name, self.instance_key, uid, name))
+                        self.logger.info('{}:{} 2a Updating Channel {}:{} {}'
+                            .format(self.plugin_obj.name, self.instance_key, uid, name, ref_url))
+                    else:
+                        self.logger.notice('{} BAD CHANNEL found, disabling {}:{}'
+                                           .format(self.plugin_obj.name, uid, name))
+                        header = None
+                        if self.config_obj.data[self.config_section]['player-disable_bad_channels']:
+                            enabled = 0
             else:
                 self.logger.info('{}:{} 2 New Channel Added {}:{}'
                     .format(self.plugin_obj.name, self.instance_key, uid, name))
@@ -370,17 +382,23 @@ class Channels(PluginChannels):
                     enabled = ch['enabled']
                 else:
                     enabled = 1
-                    ref_url = self.get_channel_ref(uid)
-                    if ref_url:
-                        parsed_url = urllib.parse.urlsplit(ref_url)
-                        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
                 hd = 0
                 thumb = None
                 thumb_size = None
-                ref_url = self.get_channel_ref(uid)
-                if ref_url:
-                    parsed_url = urllib.parse.urlsplit(ref_url)
-                    ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+
+                ref_url_full = self.get_channel_ref(uid)
+                if ref_url_full:
+                        parsed_url = urllib.parse.urlsplit(ref_url_full)
+                        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+                        self.logger.info('{}:{} 2c Updating Channel {}:{} {}'
+                            .format(self.plugin_obj.name, self.instance_key, uid, name, ref_url))
+                        channel_ref = { self.pnum: ref_url_full }
+                else:
+                    self.logger.notice('{} BAD CHANNEL found, disabling {}:{}'
+                                       .format(self.plugin_obj.name, uid, name))
+                    header = None
+                    if self.config_obj.data[self.config_section]['player-disable_bad_channels']:
+                        enabled = 0
 
             data = self.db.get_channel(uid, self.plugin_obj.name, self.instance_key)
             if data:
@@ -426,7 +444,6 @@ class Channels(PluginChannels):
         found_tvg_list = [u for u in ch_list if u.get('found') is not None]
         for ch in found_tvg_list:
             del ch['found']
-
         return results
 
     def get_tvg_reference(self):

@@ -45,7 +45,7 @@
                     "daddylive_host":{
                         "label": "DaddyLive Hostname",
                         "type": "string",
-                        "default": "daddylivestream.com",
+                        "default": "dlhd.dad",
                         "level": 1,
                         "help": "Hostname for the DaddyLive website"
                     },
