@@ -21,10 +21,13 @@ import html
 import importlib
 import importlib.resources
 import json
+import logging
 import os
 import re
+import threading
 import time
 import urllib.parse
+from threading import Thread
 
 from lib.plugins.plugin_channels import PluginChannels
 from lib.common.decorators import handle_json_except
@@ -32,6 +35,9 @@ from lib.common.decorators import handle_url_except
 import lib.common.utils as utils
 from ..lib import daddylive
 from .. import resources
+
+TERMINATE_REQUESTED = False
+
 
 class Channels(PluginChannels):
 
@@ -77,7 +83,7 @@ class Channels(PluginChannels):
 
         url = self.plugin_obj.unc_daddylive_base + \
             'watch.php?id={}'.format(_channel_id)
-        header = {'User-agent': utils.DEFAULT_USER_AGENT,
+        header = {'User-agent': self.plugin_obj.user_agent,
                   'Referer': url,
                   }
 
@@ -98,10 +104,20 @@ class Channels(PluginChannels):
             self.groups_other = None
 
         url2 = self.plugin_obj.unc_daddylive_base + \
-            'cast/stream-{}.php'.format(_channel_id)
-        header = {'User-agent': utils.DEFAULT_USER_AGENT,
-                  'Referer': url,
-                  }
+            self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)
+        if self.config_obj.data[self.plugin_obj.name.lower()]['cookie_2']:
+            header = {'User-agent': self.plugin_obj.user_agent,
+                      'Referer': url,
+                      'Cookie':  self.config_obj.data[self.plugin_obj.name.lower()]['cookie_1'] \
+                      + self.config_obj.data[self.plugin_obj.name.lower()]['cookie_2'] \
+                      + self.config_obj.data[self.plugin_obj.name.lower()]['cookie_3']
+                      }
+            self.logger.trace('{} Using cookie data'.format(self.plugin_obj.name))
+        else:
+            header = {'User-agent': self.plugin_obj.user_agent,
+                      'Referer': url
+                      }
+
         text2 = self.get_uri_data(url2, 2, header)
         data = self.db.get_channel(_channel_id, self.plugin_obj.name, self.instance_key)
         if data:
@@ -136,12 +152,11 @@ class Channels(PluginChannels):
             return
 
         ch_url = url3_match.group(1).decode('utf8')
-        header = {'User-agent': utils.DEFAULT_USER_AGENT,
+        header = {'User-agent': self.plugin_obj.user_agent,
                   'Referer': self.plugin_obj.unc_daddylive_base,
                   'Connection' : 'Keep-Alive'
                   }
         text = self.get_uri_data(ch_url, 2, header)
-
         json_updated = self.update_header(ch_json, ch_url)
 
         if ch_json:
@@ -172,7 +187,7 @@ class Channels(PluginChannels):
         if _ch_json:
             h = _ch_json.get('Header')
             if h:
-                r = h.get('Referer')
+                r = h.get('Origin')
                 if ref_url != r:
                     _ch_json['Header']['Referer'] = ref_url
                     _ch_json['Header']['Origin'] = ref_url[:-1]
@@ -193,7 +208,7 @@ class Channels(PluginChannels):
             return
 
         header = {
-            'User-agent': utils.DEFAULT_USER_AGENT,
+            'User-agent': self.plugin_obj.user_agent,
             #'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)}
             'Referer': ch_url}
         text = self.get_uri_data(ch_url, 2, _header=header)
@@ -295,7 +310,7 @@ class Channels(PluginChannels):
                             parsed_url = urllib.parse.urlsplit(ref_url_full)
                             origin_url = parsed_url.scheme + '://' + parsed_url.netloc
                             ref_url = origin_url + '/'
-                            header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                            header = {'User-agent': self.plugin_obj.user_agent,
                                       'Referer': ref_url,
                                       'Origin' : origin_url,
                                       'Connection' : 'Keep-Alive'
@@ -408,7 +423,7 @@ class Channels(PluginChannels):
             if not ref_url:
                 header = None
             else:
-                header = {'User-agent': utils.DEFAULT_USER_AGENT,
+                header = {'User-agent': self.plugin_obj.user_agent,
                           'Referer': ref_url,
                           'Origin' : ref_url[:-1],
                           'Connection' : 'Keep-Alive'
@@ -469,65 +484,44 @@ class Channels(PluginChannels):
             return
         c_key = c_key[1].decode('utf8')
 
-        key_q = re.search(b'fetchWithRetry\\(\\s*\'([^\']*)', _text)[1].decode('utf8')
-        key_url = f'https://{urllib.parse.urlparse(_ch_url).netloc}{key_q}{c_key}'
+        auth_info = get_auth_info(_text)
+        self.logger.trace('AUTH_INFO= {}'.format(auth_info))
+        if not auth_info:
+            self.logger.notice('Unable to obtain authorization keys, skipping')
+        key_url = 'https://{}{}{}' \
+            .format(
+                urllib.parse.urlparse(_ch_url).netloc,
+                auth_info['serverlookup']['qkey'], 
+                auth_info['serverlookup']['chkey'])
 
-        parts = re.search(b'(?s)const\\s+IJXX\\s*=\\s*\\"([^"]+)\\"', _text)
-        if not parts:
-            # unable to obtain the url, abort
-            self.logger.notice('{}: #3 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
-                               .format(self.plugin_obj.name, _channel_id))
-            return
-        parts = base64.b64decode(parts[1]).decode('utf-8')
-        
-
-        host_array = re.search(b'host\\s*=\\s*\\[([^\]]+)\\]', _text)
-        if not host_array:
-            # unable to obtain the url, abort
-            self.logger.notice('{}: #4 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
-                               .format(self.plugin_obj.name, _channel_id))
-            return
-        host_parts = [i.strip().strip("'\"") for i in host_array.group(1).decode('utf-8').split(',')]
-        host = ''.join(host_parts)
-
-        # Uint8Array([40,60,61,33,103,57,33,57])
-        bhex = [40, 60, 61, 33, 103, 57, 33, 57]
-        s = ''.join(chr(b ^ 73) for b in bhex)
-
-        try:
-            a_sig = re.search('(?s)sig\\":\\"([^"]*)', parts)[1]
-            a_sig = base64.b64decode(a_sig).decode('utf8')
-            a_rnd = re.search('(?s)rnd\\":\\"([^"]*)', parts)[1]
-            a_rnd = base64.b64decode(a_rnd).decode('utf8')
-            a_ts = re.search('(?s)ts\\":\\"([^"]*)', parts)[1]
-            a_ts = base64.b64decode(a_ts).decode('utf8')
-            a_host = re.search('(?s)host\\":\\"([^"]*)', parts)[1]
-            a_host = base64.b64decode(a_host).decode('utf8')
-            a_auth = re.search('(?s)script\\":\\"([^"]*)', parts)[1]
-            a_auth = base64.b64decode(a_auth).decode('utf8')
-            a_auth = 'auth.php'
-
-            a_url = f'{a_host}{a_auth}?channel_id={c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
-
-            parsed_url = urllib.parse.urlsplit(_ch_url)
-            ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
-            header = {
-                'User-agent': utils.DEFAULT_USER_AGENT,
-                'Referer': ref_url,
-                'Origin': ref_url[:-1]}
-            auth = self.get_uri_data(a_url, 2, header)
-            self.logger.trace('AUTHURL= {}  HEADER= {}  RESULT= {}'.format(a_url, header, auth))
-        except TypeError:
-            self.logger.notice('Unable to obtain auth keys, skipping')
-            x = re.search(b'(?s)var player(.{150})', _text)
-            if x:
-                self.logger.debug('keys: {}'.format(x[1]))
+        parsed_url = urllib.parse.urlsplit(_ch_url)
+        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+        #header = {
+        #    'User-agent': self.plugin_obj.user_agent,
+        #    'Referer': ref_url,
+        #    'Origin': ref_url[:-1]}
+        #auth = self.get_uri_data(auth_info['auth'], 2, header)
+        #self.logger.trace('AUTHURL= {}  HEADER= {}  RESULT= {}'.format(auth_info['auth'], header, auth))
 
         header = {
-            'User-agent': utils.DEFAULT_USER_AGENT,
+            'User-agent': self.plugin_obj.user_agent,
+            'Referer': ref_url,
+            'Origin': ref_url[:-1]}
+        a2_url = auth_info['auth2']['a2_url']
+        a2_data = auth_info['auth2']['data']
+        auth2 = self.get_uri_data(a2_url, 2, header, _data=a2_data)
+        self.logger.trace('#1 AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}'.format(a2_url, a2_data, header, auth2))
+        #self.poller = AuthPolling(self, a2_url, header, a2_data, _ch_url)
+
+        header = {
+            'User-agent': self.plugin_obj.user_agent,
             'Referer': _ch_url}
 
         text = self.get_uri_data(key_url, 2, header)
+        # this tell them that the play is not available
+        if b'Not Found' in text:
+            self.logger.trace('url results: {} {}'.format(key_url, text))
+            self.logger.notice('Channel {} not availble for Player {}'.format(_channel_id, self.pnum))
         
         m = re.search(b':"([^"]*)', text)
         try:
@@ -538,9 +532,9 @@ class Channels(PluginChannels):
         s_key = m[1].decode('utf8')
 
         if s_key == "top1/cdn":
-            m3u8_url = f"https://top1.newkso.ru/top1/cdn/{c_key}/mono.m3u8"
+            m3u8_url = f"https://top1.newkso.ru/top1/cdn/{c_key}/mono.css"
         else:
-            m3u8_url = 'https://{}new.newkso.ru/{}/{}/mono.m3u8'.format(s_key, s_key, c_key)
+            m3u8_url = 'https://{}new.newkso.ru/{}/{}/mono.css'.format(s_key, s_key, c_key)
         return m3u8_url
 
     GLOBAL_A = ""
@@ -605,3 +599,162 @@ class Channels(PluginChannels):
             total += z * pow(b, index)
         return total
     
+
+
+    def stream_terminated(self, sid):
+        """
+        This is called when the stream is terminated. Used to stop
+        any polling processing that the plugin is doing during the
+        stream.
+        """
+        global TERMINATE_REQUESTED
+        TERMINATE_REQUESTED = True
+        return None
+
+
+class AuthPolling(Thread):
+    def __init__(self, _ch_class, _uri, _header, _data, _ch_url):
+        global TERMINATE_REQUESTED
+        Thread.__init__(self)
+        self.ch_url = _ch_url
+        self.uri = _uri
+        self.data = _data
+        self.header = _header
+        self.channel_class_object = _ch_class
+        self.logger = logging.getLogger(__name__ + str(threading.get_ident()))
+        if not TERMINATE_REQUESTED:
+            self.start()
+
+    def run(self):
+        global TERMINATE_REQUESTED
+        self.logger.trace('AuthPolling started {} {} {}'.format(self.uri, os.getpid(), threading.get_ident()))
+        refresh = 600 # every 10 minutes
+        while not TERMINATE_REQUESTED:
+            count = 20
+            while count > 0:
+                refresh -= 2
+                count -= 2
+                time.sleep(2.0)
+                if TERMINATE_REQUESTED:
+                    break
+            if TERMINATE_REQUESTED:
+                break
+            if refresh < 0:
+                # need to requery and refresh auth and auth2
+                refresh = 600 # every 10 minutes
+                a_header = {
+                    'User-agent': self.channel_class_object.plugin_obj.user_agent,
+                    'Referer': self.ch_url}
+                text = self.channel_class_object.get_uri_data(self.ch_url, 2, _header=a_header)
+                if not text:
+                    self.logger.notice('#2 {} Unable to refresh auth data, continuing'
+                                       .format(self.channel_class_object.plugin_obj.name))
+                else:
+                    auth_info = get_auth_info(text)
+                    if not auth_info:
+                        self.logger.notice('#2 {} Unable to refresh auth data, continuing'
+                                           .format(self.channel_class_object.plugin_obj.name))
+                    else:
+                        key_url = 'https://{}{}{}' \
+                            .format(
+                                urllib.parse.urlparse(self.ch_url).netloc,
+                                auth_info['serverlookup']['qkey'], 
+                                auth_info['serverlookup']['chkey'])
+
+                        parsed_url = urllib.parse.urlsplit(self.ch_url)
+                        ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
+                        #b_header = {
+                        #    'User-agent': self.channel_class_object.plugin_obj.user_agent,
+                        #    'Referer': ref_url,
+                        #    'Origin': ref_url[:-1]}
+                        #auth = self.channel_class_object.get_uri_data(auth_info['auth'], 2, b_header)
+                        #self.logger.trace('#2 AUTHURL= {}  HEADER= {}  RESULT= {}'.format(auth_info['auth'], b_header, auth))
+
+                        self.uri = auth_info['auth2']['a2_url']
+                        self.data = auth_info['auth2']['data']
+ 
+            auth2 = self.channel_class_object.get_uri_data(self.uri, 2, self.header, _data=self.data)
+            self.logger.trace('#2 AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}' \
+                .format(self.uri, self.data, self.header, auth2))
+
+
+        self.logger.trace('AuthPolling terminated {} {}'.format(os.getpid(), threading.get_ident()))
+        self.uri = None
+        self.data = None
+        self.header = None
+
+
+def get_auth_info(_text):
+
+    logger = logging.getLogger(__name__ + str(threading.get_ident()))
+
+    c_key = re.search(b'(?s)const\\s+CHANNEL_KEY\\s*=\\s*\\"([^"]+)\\"', _text)
+    if not c_key:
+        # unable to obtain the url, abort
+        logger.notice('{}: #2 Unable to obtain m3u8, possible provider updated website for channel {}, aborting'
+                           .format('DaddyLive', _channel_id))
+        return
+    c_key = c_key[1].decode('utf8')
+    key_q = re.search(b'fetchWithRetry\(\\s*\'([^\']*)\\s*\'\\s\+', _text)
+    key_q = key_q[1].decode('utf-8')
+
+    a2_url = re.search(b'fetchWithRetry\\(\\s*\'(http[^\']*)', _text)[1].decode('utf-8')
+
+    a2_c_key = re.search(b'(?s)formData.*channelKey.+?(var_[^\\)]+)', _text)[1]
+    a2_c_key = re.search(b'(?s)const\\s+' + a2_c_key + b'\\s*=\\s*\\"([^"]+)\\"', _text)[1].decode('utf-8')
+
+    a2_country = re.search(b'(?s)const\\s+AUTH_COUNTRY\\s*=\\s*\\"([^"]+)\\"', _text)
+    a2_country = a2_country[1].decode('utf8')
+    #a2_country = re.search(b'(?s)formData.*country.+?(var_[^\\)]+)', _text)[1]
+    #a2_country = re.search(b'(?s)const\\s+' + a2_country + b'\\s*=\\s*\\"([^"]+)\\"', _text)[1].decode('utf-8')
+
+    a2_timestamp = re.search(b'(?s)const\\s+AUTH_TS\\s*=\\s*\\"([^"]+)\\"', _text)
+    a2_timestamp = a2_timestamp[1].decode('utf8')
+    #a2_timestamp = re.search(b'(?s)formData.*timestamp.+?(var_[^\\)]+)', _text)[1]
+    #a2_timestamp = re.search(b'(?s)const\\s+' + a2_timestamp + b'\\s*=\\s*\\"([^"]+)\\"', _text)[1].decode('utf-8')
+
+    a2_expiry = re.search(b'(?s)const\\s+AUTH_EXPIRY\\s*=\\s*\\"([^"]+)\\"', _text)
+    a2_expiry = a2_expiry[1].decode('utf8')
+    #a2_expiry = re.search(b'(?s)formData.*expiry.+?(var_[^\\)]+)', _text)[1]
+    #a2_expiry = re.search(b'(?s)const\\s+' + a2_expiry + b'\\s*=\\s*\\"([^"]+)\\"', _text)[1].decode('utf-8')
+
+    a2_token = re.search(b'(?s)const\\s+AUTH_TOKEN\\s*=\\s*\\"([^"]+)\\"', _text)
+    a2_token = a2_token[1].decode('utf8')
+    #a2_token = re.search(b'(?s)formData.*token.+?(var_[^\\)]+)', _text)[1]
+    #a2_token = re.search(b'(?s)const\\s+' + a2_token + b'\\s*=\\s*\\"([^"]+)\\"', _text)[1].decode('utf-8')
+
+    #parts = re.search(b'(?s)const\\s+(?:BUNDLE|IJXX|XKZK)\\s*=\\s*\\"([^"]+)\\"', _text)
+    #if not parts:
+    #    # unable to obtain the url, abort
+    #    return
+    #parts = base64.b64decode(parts[1]).decode('utf-8')
+    try:
+    #    a_sig = re.search('(?s)sig\\":\\"([^"]*)', parts)[1]
+    #    a_sig = base64.b64decode(a_sig).decode('utf8')
+    #    a_rnd = re.search('(?s)rnd\\":\\"([^"]*)', parts)[1]
+    #    a_rnd = base64.b64decode(a_rnd).decode('utf8')
+    #    a_ts = re.search('(?s)ts\\":\\"([^"]*)', parts)[1]
+    #    a_ts = base64.b64decode(a_ts).decode('utf8')
+    #    a_host = re.search('(?s)host\\":\\"([^"]*)', parts)[1]
+    #    a_host = base64.b64decode(a_host).decode('utf8')
+    #    a_auth = re.search('(?s)script\\":\\"([^"]*)', parts)[1]
+    #    a_auth = base64.b64decode(a_auth).decode('utf8')
+    #    a_auth = 'auth.php'
+    #    a_url = f'{a_host}{a_auth}?channel_id={c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
+
+        data = { "channelKey": a2_c_key,
+                 "country": a2_country,
+                 "timestamp": a2_timestamp,
+                 "expiry": a2_expiry,
+                 "token": a2_token
+               }
+    except TypeError as ex:
+        # Unable to obtain auth keys, skipping
+        raise ex
+        return
+    results = { "serverlookup": { "chkey": c_key, "qkey": key_q }, 
+        "auth2": { "data": data, "a2_url": a2_url }
+        }
+    logger.trace('get_auth_info = {}'.format(results))
+
+    return results

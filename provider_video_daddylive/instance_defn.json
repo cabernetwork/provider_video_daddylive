@@ -67,9 +67,9 @@
                         "label": "Player Number",
                         "type": "list",
                         "default": 2,
-                        "values": [1, 2, 3],
+                        "values": [1, 2, 3, 5],
                         "level": 2,
-                        "help": "Default: 1. Maps to the DL player number.  Not all channels have multiple players."
+                        "help": "Default: 2. Maps to the DL player number.  Not all channels have multiple players."
                     },
                     "player-disable_bad_channels":{
                         "label": "Disable Bad Channels",

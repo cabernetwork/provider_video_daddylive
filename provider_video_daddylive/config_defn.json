@@ -49,12 +49,33 @@
                         "level": 1,
                         "help": "Hostname for the DaddyLive website"
                     },
+                    "cookie_1":{
+                        "label": "Cookie 1",
+                        "type": "string",
+                        "default": "",
+                        "level": 1,
+                        "help": "Captcha cookies if needed. Format: xxx=yyy; aaa=bbb;"
+                    },
+                    "cookie_2":{
+                        "label": "Cookie 2",
+                        "type": "string",
+                        "default": "",
+                        "level": 1,
+                        "help": "Captcha cookies if needed. Format: xxx=yyy; aaa=bbb;"
+                    },
+                    "cookie_3":{
+                        "label": "Cookie 3",
+                        "type": "string",
+                        "default": "",
+                        "level": 1,
+                        "help": "Captcha cookies if needed. Format: xxx=yyy; aaa=bbb;"
+                    },
                     "player-tuner_count":{
                         "label": "tuner_count",
                         "type": "integer",
                         "default": 3,
                         "level": 3,
-                        "help": "Default: 3. Max: 4. Number of streams active at one time."
+                        "help": "Default: 3. Max: 5. Number of streams active at one time."
                     },
                     "player-send_atsc_keepalive":{
                         "label": "Send ATSC Keep-Alive",
