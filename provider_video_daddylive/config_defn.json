@@ -45,30 +45,9 @@
                     "daddylive_host":{
                         "label": "DaddyLive Hostname",
                         "type": "string",
-                        "default": "dlhd.dad",
+                        "default": "daddyhd.com",
                         "level": 1,
                         "help": "Hostname for the DaddyLive website"
-                    },
-                    "cookie_1":{
-                        "label": "Cookie 1",
-                        "type": "string",
-                        "default": "",
-                        "level": 1,
-                        "help": "Captcha cookies if needed. Format: xxx=yyy; aaa=bbb;"
-                    },
-                    "cookie_2":{
-                        "label": "Cookie 2",
-                        "type": "string",
-                        "default": "",
-                        "level": 1,
-                        "help": "Captcha cookies if needed. Format: xxx=yyy; aaa=bbb;"
-                    },
-                    "cookie_3":{
-                        "label": "Cookie 3",
-                        "type": "string",
-                        "default": "",
-                        "level": 1,
-                        "help": "Captcha cookies if needed. Format: xxx=yyy; aaa=bbb;"
                     },
                     "player-tuner_count":{
                         "label": "tuner_count",
@@ -101,9 +80,9 @@
                     "stream-g_concurrent_downloads":{
                         "label": "Concurrent Downloads",
                         "type": "integer",
-                        "default": 4,
+                        "default": 1,
                         "level": 1,
-                        "help": "Default: 1. Only used on internalproxy. Minimum is 0. Number of parallel video packet downloads happening at one time.  A value of one means no parallel processing.  Helps when provider requests are timing out."
+                        "help": "Default: 1. Only used on internalproxy. Minimum is 0. Number of parallel video packet downloads happening at one time.  A value of zero means no parallel processing.  Helps when provider requests are timing out."
                     },
                     "stream-g_http_timeout":{
                         "label": "HTTP Timeout",
