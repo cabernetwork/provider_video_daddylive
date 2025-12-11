@@ -179,13 +179,13 @@ class Channels(PluginChannels):
         if _ch_json:
             h = _ch_json.get('Header')
             if h:
-                r = h.get('Origin')
+                r = h.get('Referer')
                 if ref_url != r:
                     _ch_json['Header']['Referer'] = ref_url
                     _ch_json['Header']['Origin'] = ref_url[:-1]
                     _ch_json['ref_url'] = ref_url
                     json_updated = True
-                    self.logger.notice('{}: Player changed for channel {}.  Data has been reset'.format(self.plugin_obj.name, _ch_json['id']))
+                    self.logger.notice('{}: Player changed for channel {} ref {}.  Data has been reset'.format(self.plugin_obj.name, _ch_json['id'], ref_url))
         return json_updated
 
     @handle_url_except(timeout=10.0)
@@ -481,18 +481,10 @@ class Channels(PluginChannels):
             self.logger.notice('Unable to obtain authorization keys, skipping')
             return
 
-        # cookie, then auth2, then server lookup
+        # auth2, then server lookup
         parsed_url = urllib.parse.urlsplit(_ch_url)
         ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
-        header2 = {
-            'User-agent': self.plugin_obj.user_agent,
-            'Referer': ref_url
-            }
-        cookie_url = auth_info['cookie']['url']
-        cookie = self.get_uri_data(cookie_url, 2, header2)
-        self.logger.trace('COOKIEURL2= {}  HEADER2= {}  RESULT2= {}'.format(cookie_url, header2, cookie))
-
-        header2 = {
+        a2_header = {
             'User-agent': self.plugin_obj.user_agent,
             'Referer': ref_url,
             'Origin': ref_url[:-1],
@@ -504,8 +496,8 @@ class Channels(PluginChannels):
             }
         a2_url = auth_info['auth2']['a2_url']
         a2_data = auth_info['auth2']['data']
-        auth2 = self.get_uri_data(a2_url, 2, header2, _data=a2_data)
-        self.logger.trace('AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}'.format(a2_url, a2_data, header2, auth2))
+        auth2 = self.get_uri_data(a2_url, 2, a2_header, _data=a2_data)
+        self.logger.trace('AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}'.format(a2_url, a2_data, a2_header, auth2))
 
         key_url = 'https://{}{}{}' \
             .format(
@@ -533,7 +525,7 @@ class Channels(PluginChannels):
             return
         s_key = m[1].decode('utf8')
 
-        #self.poller = AuthPolling(self, a2_url, header, a2_data, _ch_url, cookie_url)
+        #self.poller = AuthPolling(self, a2_url, a2_header, a2_data, _ch_url)
 
         if s_key == "top1/cdn":
             m3u8_url = f"https://top1.newkso.ru/top1/cdn/{c_key}/mono.css"
@@ -617,14 +609,13 @@ class Channels(PluginChannels):
 
 
 class AuthPolling(Thread):
-    def __init__(self, _ch_class, _uri, _header, _data, _ch_url, _cookie_url):
+    def __init__(self, _ch_class, _uri, _header, _data, _ch_url):
         global TERMINATE_REQUESTED
         Thread.__init__(self)
         self.ch_url = _ch_url
         self.uri = _uri
         self.data = _data
         self.header = _header
-        self.cookie_url = _cookie_url
         self.channel_class_object = _ch_class
         self.logger = logging.getLogger(__name__ + str(threading.get_ident()))
         if not TERMINATE_REQUESTED:
@@ -636,9 +627,9 @@ class AuthPolling(Thread):
         parsed_url = urllib.parse.urlsplit(self.ch_url)
         ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
 
-        refresh = 180 # every 3 minutes
+        refresh = 240 # every 4 minutes
         while not TERMINATE_REQUESTED:
-            count = 60
+            count = 120
             while count > 0:
                 refresh -= 2
                 count -= 2
@@ -647,9 +638,10 @@ class AuthPolling(Thread):
                     break
             if TERMINATE_REQUESTED:
                 break
-            if refresh < 0:
+            if refresh < 1:
+                self.logger.trace('{} Refreshing auth2 data'.format(self.channel_class_object.plugin_obj.name))
                 # need to requery and refresh auth and auth2
-                refresh = 180 # every 10 minutes
+                refresh = 240 # every 4 minutes
                 a_header = {
                     'User-agent': self.channel_class_object.plugin_obj.user_agent,
                     'Referer': self.ch_url}
@@ -660,42 +652,18 @@ class AuthPolling(Thread):
                 else:
                     auth_info = get_auth_info(text)
                     if not auth_info:
-                        self.logger.notice('#2 {} Unable to refresh auth data, continuing'
+                        self.logger.notice('#3 {} Unable to refresh auth data, continuing'
                                            .format(self.channel_class_object.plugin_obj.name))
                     else:
-                        key_url = 'https://{}{}{}' \
-                            .format(
-                                urllib.parse.urlparse(self.ch_url).netloc,
-                                auth_info['serverlookup']['qkey'], 
-                                auth_info['serverlookup']['chkey'])
-
-                        #b_header = {
-                        #    'User-agent': self.channel_class_object.plugin_obj.user_agent,
-                        #    'Referer': ref_url,
-                        #    'Origin': ref_url[:-1]}
-                        #auth = self.channel_class_object.get_uri_data(auth_info['auth'], 2, b_header)
-                        #self.logger.trace('#2 AUTHURL= {}  HEADER= {}  RESULT= {}'.format(auth_info['auth'], b_header, auth))
-
+                        # update the auth2 data locally
                         self.uri = auth_info['auth2']['a2_url']
                         self.data = auth_info['auth2']['data']
  
-            self.channel_class_object.config_obj.refresh_config_data()
+            #self.channel_class_object.config_obj.refresh_config_data()
 
             auth2 = self.channel_class_object.get_uri_data(self.uri, 2, self.header, _data=self.data)
             self.logger.trace('#2 AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}' \
                 .format(self.uri, self.data, self.header, auth2))
-
-            if self.channel_class_object.config_obj.data[self.channel_class_object.plugin_obj.name.lower()]['cookie_1']:
-                self.logger.warning('cookie found')
-
-            header = {
-                'User-agent': self.channel_class_object.plugin_obj.user_agent,
-                'Referer': ref_url,
-                'Origin': ref_url[:-1],
-                'Cookie':  self.channel_class_object.config_obj.data[self.channel_class_object.plugin_obj.name.lower()]['cookie_1']
-                }
-            cookie = self.channel_class_object.get_uri_data(self.cookie_url, 2, header)
-            self.logger.trace('COOKIEURL2= {}  HEADER2= {}  RESULT2= {}'.format(self.cookie_url, header, cookie))
 
         self.logger.trace('AuthPolling terminated {} {}'.format(os.getpid(), threading.get_ident()))
         self.uri = None
@@ -713,17 +681,14 @@ def get_auth_info(_text):
         logger.notice('{}: #3 Unable to obtain m3u8, possible provider updated website, aborting'
                            .format('DaddyLive'))
         return
+
     c_key = c_key[1].decode('utf8')
     #/server_lookup.php?channel_id=
     key_q = re.search(b'fetchWithRetry\\(\\s*\'(/server[^\']*)', _text)
     key_q = key_q[1].decode('utf-8')
 
-    cookie_url = re.search(b'iframe src="([^"]*)', _text)
-    cookie_url = cookie_url[1].decode('utf-8')
-    #https://security.giokko.ru/cookie.php
-
     a2_url = re.search(b'fetchWithRetry\\(\\s*\'(http[^\']*)', _text)[1].decode('utf-8')
-    #https://security.giokko.ru/auth2.php
+    #https://auth.giokko.ru/auth2.php
 
     a2_c_key = c_key
 
@@ -739,25 +704,7 @@ def get_auth_info(_text):
     a2_token = re.search(b'(?s)const\\s+AUTH_TOKEN\\s*=\\s*\\"([^"]+)\\"', _text)
     a2_token = a2_token[1].decode('utf8')
 
-    #parts = re.search(b'(?s)const\\s+(?:BUNDLE|IJXX|XKZK)\\s*=\\s*\\"([^"]+)\\"', _text)
-    #if not parts:
-    #    # unable to obtain the url, abort
-    #    return
-    #parts = base64.b64decode(parts[1]).decode('utf-8')
     try:
-    #    a_sig = re.search('(?s)sig\\":\\"([^"]*)', parts)[1]
-    #    a_sig = base64.b64decode(a_sig).decode('utf8')
-    #    a_rnd = re.search('(?s)rnd\\":\\"([^"]*)', parts)[1]
-    #    a_rnd = base64.b64decode(a_rnd).decode('utf8')
-    #    a_ts = re.search('(?s)ts\\":\\"([^"]*)', parts)[1]
-    #    a_ts = base64.b64decode(a_ts).decode('utf8')
-    #    a_host = re.search('(?s)host\\":\\"([^"]*)', parts)[1]
-    #    a_host = base64.b64decode(a_host).decode('utf8')
-    #    a_auth = re.search('(?s)script\\":\\"([^"]*)', parts)[1]
-    #    a_auth = base64.b64decode(a_auth).decode('utf8')
-    #    a_auth = 'auth.php'
-    #    a_url = f'{a_host}{a_auth}?channel_id={c_key}&ts={a_ts}&rnd={a_rnd}&sig={a_sig}'
-
         data = { "channelKey": a2_c_key,
                  "country": a2_country,
                  "timestamp": a2_timestamp,
@@ -769,8 +716,7 @@ def get_auth_info(_text):
         raise ex
         return
     results = { "serverlookup": { "chkey": c_key, "qkey": key_q }, 
-        "auth2": { "data": data, "a2_url": a2_url },
-        "cookie": { "url": cookie_url }
+        "auth2": { "data": data, "a2_url": a2_url }
         }
     logger.trace('get_auth_info = {}'.format(results))
 
