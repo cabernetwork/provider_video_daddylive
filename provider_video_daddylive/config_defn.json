@@ -73,9 +73,9 @@
                     "stream-g_stream_timeout":{
                         "label": "Stream Timeout",
                         "type": "integer",
-                        "default": 140,
+                        "default": 60,
                         "level": 3,
-                        "help": "Default: 140. Used on internalproxy, streamlinkproxy and ffmpegproxy. Time in seconds to shutdown stream when no data comes from provider.  Should be about 4x HTTPRetries*HTTPTimeout"
+                        "help": "Default: 60. Used on internalproxy, streamlinkproxy and ffmpegproxy. Time in seconds to shutdown stream when no data comes from provider.  Should be about 4x HTTPRetries*HTTPTimeout"
                     },
                     "stream-g_concurrent_downloads":{
                         "label": "Concurrent Downloads",
@@ -87,16 +87,16 @@
                     "stream-g_http_timeout":{
                         "label": "HTTP Timeout",
                         "type": "integer",
-                        "default": 12,
+                        "default": 6,
                         "level": 3,
-                        "help": "Default: 8. Only used on internalproxy. Time in seconds for the time to wait for the provider to respond for each HTTP video packet request"
+                        "help": "Default: 6. Only used on internalproxy. Time in seconds for the time to wait for the provider to respond for each HTTP video packet request"
                     },
                     "stream-g_http_retries":{
                         "label": "HTTP Retries",
                         "type": "integer",
-                        "default": 2,
+                        "default": 4,
                         "level": 3,
-                        "help": "Default: 2. Only used on internalproxy. Minimum is 1. Number of times the HTTP video packet request occurs when errors are returned by provider"
+                        "help": "Default: 4. Only used on internalproxy. Minimum is 1. Number of times the HTTP video packet request occurs when errors are returned by provider"
                     },
                     "epg-plugin":{
                         "label": "EPG Plugin to Use",
