@@ -150,6 +150,8 @@ class Channels(PluginChannels):
 
         text = self.get_uri_data(ch_url, 2, header)
         json_updated = self.update_header(ch_json, ch_url)
+        if "top2new" in ch_url:
+            self.logger.warning('Bad URL from DL {}'.format(ch_url))
 
         if ch_json:
             ch_ref = ch_json.get('channel_ref')
@@ -201,8 +203,10 @@ class Channels(PluginChannels):
 
         header = {
             'User-agent': self.plugin_obj.user_agent,
-            #'Referer': self.plugin_obj.unc_daddylive_base + self.plugin_obj.unc_daddylive_stream[self.pnum].format(_channel_id)}
-            'Referer': ch_url}
+            'Referer': self.plugin_obj.unc_daddylive_base,
+            'accept-language': 'en-US,en;q=0.5',
+            'cookie': 'access=true'
+            }
         text = self.get_uri_data(ch_url, 2, _header=header)
         if text is None:
             self.logger.notice('{}: {} #1 Unable to obtain m3u8, possible player num not available for channel, aborting'
@@ -484,24 +488,24 @@ class Channels(PluginChannels):
         # auth2, then server lookup
         parsed_url = urllib.parse.urlsplit(_ch_url)
         ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
-        a2_header = {
-            'User-agent': self.plugin_obj.user_agent,
-            'Referer': ref_url,
-            'Origin': ref_url[:-1],
-            'Accept': '*/*',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Sec-Fetch-Site': 'cross-site',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty'
-            }
-        a2_url = auth_info['auth2']['a2_url']
-        a2_data = auth_info['auth2']['data']
-        auth2 = self.get_uri_data(a2_url, 2, a2_header, _data=a2_data)
-        self.logger.trace('AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}'.format(a2_url, a2_data, a2_header, auth2))
+        #a2_header = {
+        #    'User-agent': self.plugin_obj.user_agent,
+        #    'Referer': ref_url,
+        #    'Origin': ref_url[:-1],
+        #    'Accept': '*/*',
+        #    'Accept-Language': 'en-US,en;q=0.5',
+        #    'Sec-Fetch-Site': 'cross-site',
+        #    'Sec-Fetch-Mode': 'cors',
+        #    'Sec-Fetch-Dest': 'empty'
+        #    }
+        #a2_url = auth_info['auth2']['a2_url']
+        #a2_data = auth_info['auth2']['data']
+        #auth2 = self.get_uri_data(a2_url, 2, a2_header, _data=a2_data)
+        #self.logger.trace('AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}'.format(a2_url, a2_data, a2_header, auth2))
 
-        key_url = 'https://{}{}{}' \
+        key_url = '{}{}' \
             .format(
-                urllib.parse.urlparse(_ch_url).netloc,
+                #urllib.parse.urlparse(_ch_url).netloc,
                 auth_info['serverlookup']['qkey'], 
                 auth_info['serverlookup']['chkey'])
         header2 = {
@@ -519,18 +523,18 @@ class Channels(PluginChannels):
         m = re.search(b':"([^"]*)', text)
         try:
             s_key = m[1].decode('utf8')
-            self.logger.trace('Server key= {}'.format(s_key))
+            #self.logger.trace('Server key= {}'.format(s_key))
         except TypeError:
             self.logger.warning('{}: Server key for uid {} is not available, aborting'.format(self.plugin_obj.name, _channel_id))
             return
         s_key = m[1].decode('utf8')
 
-        #self.poller = AuthPolling(self, a2_url, a2_header, a2_data, _ch_url)
+        #self.poller = AuthPolling(self, None, None, None, _ch_url)
 
         if s_key == "top1/cdn":
             m3u8_url = f"https://top1.newkso.ru/top1/cdn/{c_key}/mono.css"
         else:
-            m3u8_url = 'https://{}new.giokko.ru/{}/{}/mono.css'.format(s_key, s_key, c_key)
+            m3u8_url = 'https://{}new.kiko2.ru/{}/{}/mono.css'.format(s_key, s_key, c_key)
         return m3u8_url
 
     GLOBAL_A = ""
@@ -627,7 +631,7 @@ class AuthPolling(Thread):
         parsed_url = urllib.parse.urlsplit(self.ch_url)
         ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
 
-        refresh = 240 # every 4 minutes
+        refresh = 600 # every 10 minutes
         while not TERMINATE_REQUESTED:
             count = 120
             while count > 0:
@@ -641,29 +645,29 @@ class AuthPolling(Thread):
             if refresh < 1:
                 self.logger.trace('{} Refreshing auth2 data'.format(self.channel_class_object.plugin_obj.name))
                 # need to requery and refresh auth and auth2
-                refresh = 240 # every 4 minutes
+                refresh = 600 # every 10 minutes
                 a_header = {
                     'User-agent': self.channel_class_object.plugin_obj.user_agent,
                     'Referer': self.ch_url}
                 text = self.channel_class_object.get_uri_data(self.ch_url, 2, _header=a_header)
-                if not text:
-                    self.logger.notice('#2 {} Unable to refresh auth data, continuing'
-                                       .format(self.channel_class_object.plugin_obj.name))
-                else:
-                    auth_info = get_auth_info(text)
-                    if not auth_info:
-                        self.logger.notice('#3 {} Unable to refresh auth data, continuing'
-                                           .format(self.channel_class_object.plugin_obj.name))
-                    else:
-                        # update the auth2 data locally
-                        self.uri = auth_info['auth2']['a2_url']
-                        self.data = auth_info['auth2']['data']
+                #if not text:
+                #    self.logger.notice('#2 {} Unable to refresh auth data, continuing'
+                #                       .format(self.channel_class_object.plugin_obj.name))
+                #else:
+                #    auth_info = get_auth_info(text)
+                #    if not auth_info:
+                #        self.logger.notice('#3 {} Unable to refresh auth data, continuing'
+                #                           .format(self.channel_class_object.plugin_obj.name))
+                #    else:
+                #        # update the auth2 data locally
+                #        self.uri = auth_info['auth2']['a2_url']
+                #        self.data = auth_info['auth2']['data']
  
             #self.channel_class_object.config_obj.refresh_config_data()
 
-            auth2 = self.channel_class_object.get_uri_data(self.uri, 2, self.header, _data=self.data)
-            self.logger.trace('#2 AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}' \
-                .format(self.uri, self.data, self.header, auth2))
+            #auth2 = self.channel_class_object.get_uri_data(self.uri, 2, self.header, _data=self.data)
+            #self.logger.trace('#2 AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}' \
+            #    .format(self.uri, self.data, self.header, auth2))
 
         self.logger.trace('AuthPolling terminated {} {}'.format(os.getpid(), threading.get_ident()))
         self.uri = None
@@ -681,42 +685,57 @@ def get_auth_info(_text):
         logger.notice('{}: #3 Unable to obtain m3u8, possible provider updated website, aborting'
                            .format('DaddyLive'))
         return
+    #logger.warning(c_key)
+
+    auth_str = re.search(b'(?s)use strict\'\;\\s+const var_[^"]+\\"([^"]+)\\"', _text)
+    #logger.warning(auth_str)
+    auth_str = auth_str[1].decode('utf8')
+    #logger.warning(auth_str)
+
+    #logger.warning('##########################################################################')
+    #logger.warning(_text)
+    #logger.warning('##########################################################################')
+    
 
     c_key = c_key[1].decode('utf8')
+    #logger.warning(c_key)
     #/server_lookup.php?channel_id=
-    key_q = re.search(b'fetchWithRetry\\(\\s*\'(/server[^\']*)', _text)
+    key_q = re.search(b'fetchWithRetry\\(\\s*\'([^\']*)', _text)
+    #logger.warning(key_q)
     key_q = key_q[1].decode('utf-8')
+    #logger.warning(key_q)
 
-    a2_url = re.search(b'fetchWithRetry\\(\\s*\'(http[^\']*)', _text)[1].decode('utf-8')
-    #https://auth.giokko.ru/auth2.php
+    #a2_url = re.search(b'fetchWithRetry\\(\\s*\'(http[^\']*)', _text)[1].decode('utf-8')
+    ##https://auth.giokko.ru/auth2.php
 
-    a2_c_key = c_key
+    #a2_c_key = c_key
 
-    a2_country = re.search(b'(?s)const\\s+AUTH_COUNTRY\\s*=\\s*\\"([^"]+)\\"', _text)
-    a2_country = a2_country[1].decode('utf8')
+    #a2_country = re.search(b'(?s)const\\s+AUTH_COUNTRY\\s*=\\s*\\"([^"]+)\\"', _text)
+    #a2_country = a2_country[1].decode('utf8')
 
-    a2_timestamp = re.search(b'(?s)const\\s+AUTH_TS\\s*=\\s*\\"([^"]+)\\"', _text)
-    a2_timestamp = a2_timestamp[1].decode('utf8')
+    #a2_timestamp = re.search(b'(?s)const\\s+AUTH_TS\\s*=\\s*\\"([^"]+)\\"', _text)
+    #a2_timestamp = a2_timestamp[1].decode('utf8')
 
-    a2_expiry = re.search(b'(?s)const\\s+AUTH_EXPIRY\\s*=\\s*\\"([^"]+)\\"', _text)
-    a2_expiry = a2_expiry[1].decode('utf8')
+    #a2_expiry = re.search(b'(?s)const\\s+AUTH_EXPIRY\\s*=\\s*\\"([^"]+)\\"', _text)
+    #a2_expiry = a2_expiry[1].decode('utf8')
 
-    a2_token = re.search(b'(?s)const\\s+AUTH_TOKEN\\s*=\\s*\\"([^"]+)\\"', _text)
-    a2_token = a2_token[1].decode('utf8')
+    #a2_token = re.search(b'(?s)const\\s+AUTH_TOKEN\\s*=\\s*\\"([^"]+)\\"', _text)
+    #a2_token = a2_token[1].decode('utf8')
 
-    try:
-        data = { "channelKey": a2_c_key,
-                 "country": a2_country,
-                 "timestamp": a2_timestamp,
-                 "expiry": a2_expiry,
-                 "token": a2_token
-               }
-    except TypeError as ex:
-        # Unable to obtain auth keys, skipping
-        raise ex
-        return
-    results = { "serverlookup": { "chkey": c_key, "qkey": key_q }, 
-        "auth2": { "data": data, "a2_url": a2_url }
+    #try:
+    #    data = { "channelKey": a2_c_key,
+    #             "country": a2_country,
+    #             "timestamp": a2_timestamp,
+    #             "expiry": a2_expiry,
+    #             "token": a2_token
+    #           }
+    #except TypeError as ex:
+    #    # Unable to obtain auth keys, skipping
+    #    raise ex
+    #    return
+    results = { "serverlookup": { "chkey": c_key, "qkey": key_q },
+        #"auth2": { "data": data, "a2_url": a2_url }
+        "auth": { "auth_str": auth_str }
         }
     logger.trace('get_auth_info = {}'.format(results))
 
