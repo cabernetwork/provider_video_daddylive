@@ -43,7 +43,7 @@ class Channels(PluginChannels):
 
     def __init__(self, _instance_obj):
         super().__init__(_instance_obj)
-
+        Channels.class_db = self.db
         self.pnum = self.config_obj.data[self.config_section]['player-number']
         self.search_url = None
         self.search_m3u8 = None
@@ -86,7 +86,6 @@ class Channels(PluginChannels):
         header = {'User-agent': self.plugin_obj.user_agent,
                   'Referer': url,
                   }
-
         text = self.get_uri_data(url, 2, header)
         if not text:
             self.logger.info('{}: 1 Unable to obtain url for channel {}, aborting'
@@ -152,6 +151,7 @@ class Channels(PluginChannels):
         json_updated = self.update_header(ch_json, ch_url)
         if "top2new" in ch_url:
             self.logger.warning('Bad URL from DL {}'.format(ch_url))
+            ch_url = ch_url.replace('top2new.hlsjs.ru', 'epicplayplay.cfd')
 
         if ch_json:
             ch_ref = ch_json.get('channel_ref')
@@ -471,7 +471,6 @@ class Channels(PluginChannels):
             return []
 
     def find_m3u8(self, _text, _channel_id, _header, _ch_url):
-
         c_key = re.search(b'(?s)const\\s+CHANNEL_KEY\\s*=\\s*\\"([^"]+)\\"', _text)
         if not c_key:
             # unable to obtain the url, abort
@@ -503,20 +502,28 @@ class Channels(PluginChannels):
         #auth2 = self.get_uri_data(a2_url, 2, a2_header, _data=a2_data)
         #self.logger.trace('AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}'.format(a2_url, a2_data, a2_header, auth2))
 
-        key_url = '{}{}' \
-            .format(
-                #urllib.parse.urlparse(_ch_url).netloc,
-                auth_info['serverlookup']['qkey'], 
-                auth_info['serverlookup']['chkey'])
+        if 'http' in auth_info['serverlookup']['qkey']:
+            key_url = '{}{}' \
+                .format(
+                    auth_info['serverlookup']['qkey'], 
+                    auth_info['serverlookup']['chkey'])
+        else:
+            # DL using relative URL
+            key_url = 'https://{}{}{}' \
+                .format(
+                    urllib.parse.urlparse(_ch_url).netloc,
+                    auth_info['serverlookup']['qkey'], 
+                    auth_info['serverlookup']['chkey'])
         header2 = {
             'User-agent': self.plugin_obj.user_agent,
-            'Referer': _ch_url
+            'Referer': _ch_url,
+            'Origin' : _ch_url[:-1]
             }
         text = self.get_uri_data(key_url, 2, header2)
         self.logger.trace('KEYLOOKUP= {}  HEADER2= {}  RESULT2= {}'.format(key_url, header2, text))
 
-        # this tell them that the play is not available
-        if b'Not Found' in text:
+        # The player is not available
+        if  not (text and b'Not Found' not in text):
             self.logger.debug('url results: {} {}'.format(key_url, text))
             self.logger.notice('Channel {} not availble for Player {}'.format(_channel_id, self.pnum))
         
@@ -529,12 +536,50 @@ class Channels(PluginChannels):
             return
         s_key = m[1].decode('utf8')
 
-        #self.poller = AuthPolling(self, None, None, None, _ch_url)
+        #send heartbeat
+        hb_url = 'https://{}/heartbeat'.format(auth_info['auth']['data']['heartbeat'])
+        hb_auth = auth_info['auth']['data']['session']
+        hb_key = auth_info['auth']['data']['channelKey']
+        hb_country = auth_info['auth']['data']['country']
+        hb_timestamp = auth_info['auth']['data']['timestamp']
+        hb_client_token = '{}|{}|{}|{}|{}|{}|{}|{}'.format( \
+            hb_key, hb_country, hb_timestamp, self.plugin_obj.user_agent, \
+            self.plugin_obj.user_agent, '1680x1050', 'America/Chicago', 'en-US'
+            )
+
+        self.logger.warning(hb_client_token)
+        hb_client_token = base64.b64encode(hb_client_token.encode()).decode('utf8')
+        self.logger.warning(hb_client_token)
+
+        header2 = {
+            'User-agent': self.plugin_obj.user_agent,
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Referer': ref_url,
+            'Origin' : ref_url[:-1],
+            'Authorization': 'Bearer {}'.format(hb_auth),
+            'X-Channel-Key': hb_key,
+            'X-Client-Token': hb_client_token,
+            'X-User-Agent': self.plugin_obj.user_agent,
+            'keepalive': 'true'
+            }
+        text = self.get_uri_data(hb_url, 2, header2)
+        self.logger.trace('HEARTBEAT= {}  HEADER2= {}  RESULT2= {}'.format(hb_url, header2, text))
+
+        # update header with heartbeat
+        ch_db_data = self.db.get_channel(_channel_id, self.plugin_obj.name, self.instance_key)
+        ch_db_data['json']['Header']['Authorization'] = 'Bearer {}'.format(hb_auth)
+        ch_db_data['json']['Header']['X-Channel-Key'] = hb_key
+        ch_db_data['json']['Header']['X-Client-Token'] = hb_client_token
+        ch_db_data['json']['Header']['X-User-Agent'] = self.plugin_obj.user_agent
+
+        self.db.update_channel_json(ch_db_data['json'], self.plugin_obj.name, self.instance_key)
+
+        #self.poller = AuthPolling(self, None, None, auth_info['auth']['data'], _ch_url, _channel_id)
 
         if s_key == "top1/cdn":
             m3u8_url = f"https://top1.newkso.ru/top1/cdn/{c_key}/mono.css"
         else:
-            m3u8_url = 'https://{}new.kiko2.ru/{}/{}/mono.css'.format(s_key, s_key, c_key)
+            m3u8_url = 'https://{}new.{}/{}/{}/mono.css'.format(s_key, auth_info['auth']['data']['m3u8_domain'], s_key, c_key)
         return m3u8_url
 
     GLOBAL_A = ""
@@ -613,10 +658,11 @@ class Channels(PluginChannels):
 
 
 class AuthPolling(Thread):
-    def __init__(self, _ch_class, _uri, _header, _data, _ch_url):
+    def __init__(self, _ch_class, _uri, _header, _data, _ch_url, _channel_id):
         global TERMINATE_REQUESTED
         Thread.__init__(self)
         self.ch_url = _ch_url
+        self.channel_id = _channel_id
         self.uri = _uri
         self.data = _data
         self.header = _header
@@ -631,9 +677,10 @@ class AuthPolling(Thread):
         parsed_url = urllib.parse.urlsplit(self.ch_url)
         ref_url = parsed_url.scheme + '://' + parsed_url.netloc + '/'
 
-        refresh = 600 # every 10 minutes
+        refresh = 180 # every 3 minutes
         while not TERMINATE_REQUESTED:
-            count = 120
+            count = 45 
+            # DL uses 45 seconds
             while count > 0:
                 refresh -= 2
                 count -= 2
@@ -643,31 +690,76 @@ class AuthPolling(Thread):
             if TERMINATE_REQUESTED:
                 break
             if refresh < 1:
-                self.logger.trace('{} Refreshing auth2 data'.format(self.channel_class_object.plugin_obj.name))
-                # need to requery and refresh auth and auth2
-                refresh = 600 # every 10 minutes
+                self.logger.trace('{} Refreshing heartbeat data'.format(self.channel_class_object.plugin_obj.name))
+                # need to requery and refresh heartbeat
+                refresh = 180 # every 3 minutes
                 a_header = {
                     'User-agent': self.channel_class_object.plugin_obj.user_agent,
-                    'Referer': self.ch_url}
+                    'Referer': self.channel_class_object.plugin_obj.unc_daddylive_base,
+                    'accept-language': 'en-US,en;q=0.5',
+                    'cookie': 'access=true'
+                    }
                 text = self.channel_class_object.get_uri_data(self.ch_url, 2, _header=a_header)
-                #if not text:
-                #    self.logger.notice('#2 {} Unable to refresh auth data, continuing'
-                #                       .format(self.channel_class_object.plugin_obj.name))
-                #else:
-                #    auth_info = get_auth_info(text)
-                #    if not auth_info:
-                #        self.logger.notice('#3 {} Unable to refresh auth data, continuing'
-                #                           .format(self.channel_class_object.plugin_obj.name))
-                #    else:
-                #        # update the auth2 data locally
-                #        self.uri = auth_info['auth2']['a2_url']
-                #        self.data = auth_info['auth2']['data']
+                if not text:
+                    self.logger.notice('#2 {} Unable to refresh heartbeat data, continuing'
+                                       .format(self.channel_class_object.plugin_obj.name))
+                else:
+                    auth_info = get_auth_info(text)
+                    if not auth_info:
+                        self.logger.notice('#3 {} Unable to refresh heartbeat data, continuing'
+                                           .format(self.channel_class_object.plugin_obj.name))
+                    else:
+                        # update the auth data locally
+                        self.data = auth_info['auth']['data']
+                        hb_auth = auth_info['auth']['data']['session']
+                        hb_key = auth_info['auth']['data']['channelKey']
+                        hb_country = auth_info['auth']['data']['country']
+                        hb_timestamp = auth_info['auth']['data']['timestamp']
+                        hb_client_token = '{}|{}|{}|{}|{}|{}|{}|{}'.format( \
+                            hb_key, hb_country, hb_timestamp, self.channel_class_object.plugin_obj.user_agent, \
+                            self.channel_class_object.plugin_obj.user_agent, '1680x1050', 'America/Chicago', 'en-US'
+                            )
+                        hb_client_token = base64.b64encode(hb_client_token.encode()).decode('utf8')
+
+                        ch_db_data = self.channel_class_object.db.get_channel( \
+                            self.channel_id, self.channel_class_object.plugin_obj.name, \
+                            self.channel_class_object.instance_key)
+                        ch_db_data['json']['Header']['Authorization'] = 'Bearer {}'.format(hb_auth)
+                        ch_db_data['json']['Header']['X-Channel-Key'] = hb_key
+                        ch_db_data['json']['Header']['X-Client-Token'] = hb_client_token
+                        ch_db_data['json']['Header']['X-User-Agent'] = self.channel_class_object.plugin_obj.user_agent
+                        self.channel_class_object.db.update_channel_json(ch_db_data['json'], \
+                            self.channel_class_object.plugin_obj.name, \
+                            self.channel_class_object.instance_key)
  
             #self.channel_class_object.config_obj.refresh_config_data()
 
-            #auth2 = self.channel_class_object.get_uri_data(self.uri, 2, self.header, _data=self.data)
-            #self.logger.trace('#2 AUTHURL2= {}  DATA2= {}  HEADER2= {}  RESULT2= {}' \
-            #    .format(self.uri, self.data, self.header, auth2))
+            hb_url = 'https://{}/heartbeat'.format(self.data['heartbeat'])
+            hb_auth = self.data['session']
+            hb_key = self.data['channelKey']
+            hb_country = self.data['country']
+            hb_timestamp = self.data['timestamp']
+            hb_client_token = '{}|{}|{}|{}|{}|{}|{}|{}'.format( \
+                hb_key, hb_country, hb_timestamp, self.channel_class_object.plugin_obj.user_agent, \
+                self.channel_class_object.plugin_obj.user_agent, '1680x1050', 'America/Chicago', 'en-US'
+                )
+
+            hb_client_token = base64.b64encode(hb_client_token.encode()).decode('utf8')
+
+            header2 = {
+                'User-agent': self.channel_class_object.plugin_obj.user_agent,
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Referer': ref_url,
+                'Origin' : ref_url[:-1],
+                'Authorization': 'Bearer {}'.format(hb_auth),
+                'X-Channel-Key': hb_key,
+                'X-Client-Token': hb_client_token,
+                'X-User-Agent': self.channel_class_object.plugin_obj.user_agent,
+                'keepalive': 'true'
+                }
+            text = self.channel_class_object.get_uri_data(hb_url, 2, header2)
+            self.logger.trace('2HEARTBEAT= {}  HEADER2= {}  RESULT2= {}'.format(hb_url, header2, text))
+
 
         self.logger.trace('AuthPolling terminated {} {}'.format(os.getpid(), threading.get_ident()))
         self.uri = None
@@ -685,58 +777,68 @@ def get_auth_info(_text):
         logger.notice('{}: #3 Unable to obtain m3u8, possible provider updated website, aborting'
                            .format('DaddyLive'))
         return
-    #logger.warning(c_key)
 
     auth_str = re.search(b'(?s)use strict\'\;\\s+const var_[^"]+\\"([^"]+)\\"', _text)
-    #logger.warning(auth_str)
     auth_str = auth_str[1].decode('utf8')
-    #logger.warning(auth_str)
-
-    #logger.warning('##########################################################################')
-    #logger.warning(_text)
-    #logger.warning('##########################################################################')
-    
 
     c_key = c_key[1].decode('utf8')
-    #logger.warning(c_key)
     #/server_lookup.php?channel_id=
     key_q = re.search(b'fetchWithRetry\\(\\s*\'([^\']*)', _text)
-    #logger.warning(key_q)
     key_q = key_q[1].decode('utf-8')
-    #logger.warning(key_q)
 
     #a2_url = re.search(b'fetchWithRetry\\(\\s*\'(http[^\']*)', _text)[1].decode('utf-8')
     ##https://auth.giokko.ru/auth2.php
 
     #a2_c_key = c_key
 
-    #a2_country = re.search(b'(?s)const\\s+AUTH_COUNTRY\\s*=\\s*\\"([^"]+)\\"', _text)
-    #a2_country = a2_country[1].decode('utf8')
+    a2_country = re.search(b'(?s)const\\s+AUTH_COUNTRY\\s*=\\s*\\"([^"]+)\\"', _text)
+    a2_country = a2_country[1].decode('utf8')
 
-    #a2_timestamp = re.search(b'(?s)const\\s+AUTH_TS\\s*=\\s*\\"([^"]+)\\"', _text)
-    #a2_timestamp = a2_timestamp[1].decode('utf8')
+    a2_timestamp = re.search(b'(?s)const\\s+AUTH_TS\\s*=\\s*\\"([^"]+)\\"', _text)
+    a2_timestamp = a2_timestamp[1].decode('utf8')
 
     #a2_expiry = re.search(b'(?s)const\\s+AUTH_EXPIRY\\s*=\\s*\\"([^"]+)\\"', _text)
     #a2_expiry = a2_expiry[1].decode('utf8')
 
-    #a2_token = re.search(b'(?s)const\\s+AUTH_TOKEN\\s*=\\s*\\"([^"]+)\\"', _text)
-    #a2_token = a2_token[1].decode('utf8')
+    a2_token = re.search(b'(?s)const\\s+AUTH_TOKEN\\s*=\\s*\\"([^"]+)\\"', _text)
+    a2_token = a2_token[1].decode('utf8')
 
-    #try:
-    #    data = { "channelKey": a2_c_key,
-    #             "country": a2_country,
-    #             "timestamp": a2_timestamp,
-    #             "expiry": a2_expiry,
-    #             "token": a2_token
-    #           }
-    #except TypeError as ex:
-    #    # Unable to obtain auth keys, skipping
-    #    raise ex
-    #    return
+    # client_token = 
+    #  function generateClientToken() {
+    #    const ua = navigator.userAgent;
+    #    const ts = AUTH_TS;
+    #    const screen = `${window.screen.width}x${window.screen.height}`;
+    #    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    #    const lang = navigator.language || navigator.userLanguage || 'en';
+    #    const fingerprint = `${ua}|${screen}|${tz}|${lang}`;
+    #    const signData = `${CHANNEL_KEY}|${AUTH_COUNTRY}|${ts}|${ua}|${fingerprint}`;
+    #    return btoa(signData);
+    #  }
+    # base64 decoded string:
+    # premium320|US|1765991564|Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:146.0) Gecko/20100101 Firefox/146.0|Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:146.0) Gecko/20100101 Firefox/146.0|1680x1050|America/Chicago|en-US
+
+    a2_heartbeat = re.search(b'https:\/\/([^/]+)\/heartbeat', _text)
+    a2_heartbeat = a2_heartbeat[1].decode('utf8')
+    base_heartbeat = 'kiko2.ru'
+    domain = re.search(r"\.([A-Za-z0-9-]+\.[A-Za-z]{2,})$", a2_heartbeat)
+    if domain:
+        base_heartbeat = domain[1].lower()
+
+    try:
+        data = { "channelKey": c_key,
+                 "country": a2_country,
+                 "timestamp": a2_timestamp,
+                 #"expiry": a2_expiry,
+                 "heartbeat": a2_heartbeat,
+                 "m3u8_domain": base_heartbeat,
+                 "session": a2_token
+               }
+    except TypeError as ex:
+        # Unable to obtain auth keys, skipping
+        raise ex
+        return
     results = { "serverlookup": { "chkey": c_key, "qkey": key_q },
-        #"auth2": { "data": data, "a2_url": a2_url }
-        "auth": { "auth_str": auth_str }
+        "auth": { "data": data }
         }
     logger.trace('get_auth_info = {}'.format(results))
-
     return results

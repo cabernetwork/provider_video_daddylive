@@ -3,7 +3,7 @@
         "id": "provider_video_daddylive",
         "name": "DaddyLive",
         "version": {
-            "current": "0.1.67"
+            "current": "0.1.68"
         },
         "requires": [{
             "cabernet": {
@@ -18,7 +18,7 @@
         "license": "MIT License, Copyright (C) 2023 ROCKY4546",
         "source": "https://github.com/cabernetwork/provider_video_daddylive",
         "forum": "https://tvheadend.org/d/7455-daddylive-plutotv-xumo-m3u-xmltv-samsungtv-plex-tvguide-interfaces-appliance",
-        "website": "https://daddylive.dad/",
+        "website": "https://daddyhd.com/",
         "icon": "resources/icon.jpg",
         "fanart": "resources/fanart.png",
         "dependencies": "(optional) TVGuide provides the EPG for DaddyLive"
